@@ -1,0 +1,16 @@
+[
+  {
+    "username": "fsadfasdf",
+    "pnr": "1234567890",
+    "description": "fsdfasdfasd",
+    "issueDomain": "facilities",
+    "createdAt": "2025-03-07T11:18:14.783Z"
+  },
+  {
+    "username": "fsdafsadfsad",
+    "pnr": "1234567890",
+    "description": "fasdfsagsadgsag",
+    "issueDomain": "ticketing",
+    "createdAt": "2025-03-07T11:19:06.462Z"
+  }
+]
