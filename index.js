@@ -1,4 +1,3 @@
-// index.js
 const express = require("express");
 const fs = require('fs');
 const path = require('path');
@@ -12,42 +11,116 @@ app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 
-// Global complaints data
-let complaintsData = [];
-
-// File path for storing complaints
+// File paths for storing data
 const complaintsFile = path.join(__dirname, 'complaints.json');
+const USERS_FILE = path.join(__dirname, 'users.json');
 
-// Ensure complaints.json exists
+// Ensure `users.json` exists
+if (!fs.existsSync(USERS_FILE)) {
+    fs.writeFileSync(USERS_FILE, JSON.stringify([]));
+}
+
+// Ensure `complaints.json` exists
 if (!fs.existsSync(complaintsFile)) {
     fs.writeFileSync(complaintsFile, JSON.stringify([]));
 }
 
+// Load complaints data into memory
+let complaintsData = JSON.parse(fs.readFileSync(complaintsFile, 'utf8'));
+
 // Routes
+
+// Registration Page
+app.get('/register', (req, res) => {
+    res.render('register', { registerError: null });
+});
+
+// Registration Logic (No bcrypt, stores password as-is)
+app.post('/register', (req, res) => {
+    const { fullname, email, username, password, confirmPassword } = req.body;
+
+    if (!fullname || !email || !username || !password) {
+        return res.render('register', { registerError: 'All fields are required' });
+    }
+
+    if (password !== confirmPassword) {
+        return res.render('register', { registerError: 'Passwords do not match' });
+    }
+
+    try {
+        let users = JSON.parse(fs.readFileSync(USERS_FILE, 'utf8'));
+
+        if (users.some(u => u.username === username)) {
+            return res.render('register', { registerError: 'Username already taken' });
+        }
+
+        if (users.some(u => u.email === email)) {
+            return res.render('register', { registerError: 'Email already registered' });
+        }
+
+        const newUser = {
+            id: users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1,
+            fullname,
+            email,
+            username,
+            password,  // Stored as plain text (not secure for production)
+            createdAt: new Date().toISOString()
+        };
+
+        users.push(newUser);
+        fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
+
+        res.redirect('/');
+    } catch (error) {
+        console.error('Registration error:', error);
+        res.render('register', { registerError: 'Registration failed. Please try again.' });
+    }
+});
+
+// Login Logic
+app.post('/login', (req, res) => {
+    const { username, password } = req.body;
+
+    try {
+        const users = JSON.parse(fs.readFileSync(USERS_FILE, 'utf8'));
+        const user = users.find(u => u.username === username || u.email === username);
+
+        if (!user || user.password !== password) {
+            return res.render('home', { loginError: 'Invalid username or password' });
+        }
+
+        res.redirect('/complaint');
+    } catch (error) {
+        console.error('Login error:', error);
+        res.render('home', { loginError: 'An error occurred' });
+    }
+});
+
+// Home Route
 app.get("/", (req, res) => {
     res.render("home");
 });
 
+// Complaint Form
 app.get("/complaint", (req, res) => {
-    
     res.render("complaint", {
         success: req.query.success,
         error: req.query.error
     });
 });
 
+// Submit Complaint
 app.post('/submit-complaint', (req, res) => {
     try {
-        const complaintsData = fs.readFileSync(complaintsFile);
-        const complaints = JSON.parse(complaintsData);
+        const complaints = JSON.parse(fs.readFileSync(complaintsFile));
 
         const newComplaint = {
-            id: Date.now().toString(), 
+            id: Date.now().toString(),
             username: req.body.username,
             pnr: req.body.pnr,
             description: req.body.description,
             issueDomain: req.body.issueDomain,
-            status: "Pending", 
+            status: "Pending",
             createdAt: new Date().toISOString()
         };
 
@@ -61,76 +134,86 @@ app.post('/submit-complaint', (req, res) => {
     }
 });
 
-
-// Render dashboard with paginated complaints
+// Staff Dashboard with Pagination
 app.get("/staff-dashboard", (req, res) => {
-    // Load complaints data from complaint.json
-fs.readFile("complaints.json", "utf8", (err, data) => {
-    if (err) {
-      console.error("Error reading the file:", err);
-      return;
-    }
-  
     try {
-      complaintsData = JSON.parse(data);
-      console.log("Complaints data loaded successfully.");
-    } catch (parseError) {
-      console.error("Error parsing JSON:", parseError);
+        const complaints = JSON.parse(fs.readFileSync(complaintsFile));
+
+        const page = parseInt(req.query.page) || 1;
+        const itemsPerPage = 5;
+        const startIndex = (page - 1) * itemsPerPage;
+        const paginatedComplaints = complaints.slice(startIndex, startIndex + itemsPerPage);
+        const totalPages = Math.ceil(complaints.length / itemsPerPage);
+
+        res.render("staff_dashboard.ejs", {
+            staffName: "Railway Staff",
+            complaints: paginatedComplaints,
+            currentPage: page,
+            totalPages
+        });
+    } catch (error) {
+        console.error("Error loading complaints:", error);
+        res.render("staff_dashboard.ejs", { staffName: "Railway Staff", complaints: [], currentPage: 1, totalPages: 1 });
     }
-  });
-
-  
-  const page = parseInt(req.query.page) || 1;
-  const itemsPerPage = 5;
-  const startIndex = (page - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const paginatedComplaints = complaintsData.slice(startIndex, endIndex);
-  const totalPages = Math.ceil(complaintsData.length / itemsPerPage);
-
-  res.render("staff_dashboard.ejs", {
-    staffName: "Railway Staff",
-    complaints: paginatedComplaints,
-    currentPage: page,
-    totalPages: totalPages
-  });
 });
 
-// API to get a specific complaint
+// API: Get Specific Complaint
 app.get("/api/complaints/:id", (req, res) => {
-  const complaint = complaintsData.find(c => c.id === req.params.id);
-  complaint ? res.json(complaint) : res.status(404).json({ error: "Complaint not found" });
+    const complaints = JSON.parse(fs.readFileSync(complaintsFile));
+    const complaint = complaints.find(c => c.id === req.params.id);
+    complaint ? res.json(complaint) : res.status(404).json({ error: "Complaint not found" });
 });
-  
 
-app.put("/api/complaints/:id/resolve", (req, res) => {
-    const complaintIndex = complaintsData.findIndex(c => c.id === req.params.id);
-    
-    if (complaintIndex !== -1) {
-      const { resolutionDetails, resolutionCategory } = req.body;
-      if (!resolutionDetails || !resolutionCategory) {
-        return res.status(400).json({ error: "Missing resolution details or category" });
-      }
-  
-      // Update the complaint object
-      complaintsData[complaintIndex].status = "Resolved";
-      complaintsData[complaintIndex].resolutionDetails = resolutionDetails;
-      complaintsData[complaintIndex].resolutionCategory = resolutionCategory;
-      complaintsData[complaintIndex].resolvedAt = new Date().toISOString();
-  
-      // Write the updated complaintsData back to the JSON file
-      fs.writeFile("complaints.json", JSON.stringify(complaintsData, null, 2), (err) => {
-        if (err) {
-          console.error("Error updating complaint.json:", err);
-          return res.status(500).json({ error: "Internal Server Error" });
+// API: Update Complaint to "In Progress"
+app.put("/api/complaints/:id/progress", (req, res) => {
+    try {
+        let complaints = JSON.parse(fs.readFileSync(complaintsFile));
+        const complaintIndex = complaints.findIndex(c => c.id === req.params.id);
+
+        if (complaintIndex === -1) {
+            return res.status(404).json({ error: "Complaint not found" });
         }
-        res.json(complaintsData[complaintIndex]);
-      });
-  
-    } else {
-      res.status(404).json({ error: "Complaint not found" });
+
+        complaints[complaintIndex].status = "In Progress";
+        fs.writeFileSync(complaintsFile, JSON.stringify(complaints, null, 2));
+
+        res.json(complaints[complaintIndex]);
+    } catch (error) {
+        console.error("Error updating complaint:", error);
+        res.status(500).json({ error: "Internal Server Error" });
     }
-  });
-  
+});
+
+// API: Resolve Complaint
+app.put("/api/complaints/:id/resolve", (req, res) => {
+    try {
+        let complaints = JSON.parse(fs.readFileSync(complaintsFile));
+        const complaintIndex = complaints.findIndex(c => c.id === req.params.id);
+
+        if (complaintIndex === -1) {
+            return res.status(404).json({ error: "Complaint not found" });
+        }
+
+        const { resolutionDetails, resolutionCategory } = req.body;
+        if (!resolutionDetails || !resolutionCategory) {
+            return res.status(400).json({ error: "Missing resolution details or category" });
+        }
+
+        complaints[complaintIndex].status = "Resolved";
+        complaints[complaintIndex].resolutionDetails = resolutionDetails;
+        complaints[complaintIndex].resolutionCategory = resolutionCategory;
+        complaints[complaintIndex].resolvedAt = new Date().toISOString();
+
+        fs.writeFileSync(complaintsFile, JSON.stringify(complaints, null, 2));
+
+        res.json(complaints[complaintIndex]);
+    } catch (error) {
+        console.error("Error resolving complaint:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+// Start Server
 app.listen(3000, () => {
-    console.log("Port running at 3000");
+    console.log("Server running on port 3000");
 });
