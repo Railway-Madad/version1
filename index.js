@@ -43,7 +43,7 @@ app.post('/submit-complaint', (req, res) => {
             pnr: req.body.pnr,
             description: req.body.description,
             issueDomain: req.body.issueDomain,
-            status: "pending", 
+            status: "Pending", 
             createdAt: new Date().toISOString()
         };
 
