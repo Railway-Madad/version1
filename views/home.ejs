@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rail Madad - Railway Complaint Portal</title>
+    <style>
+        :root {
+            --primary-color: #0056b3;
+            --secondary-color: #ff6600;
+            --bg-light: #f8f9fa;
+            --text-dark: #333;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('home.jpg');
+            background-size: cover;
+            background-position: center;
+            height: 700px;
+            display: flex;
+            align-items: center;
+            color: white;
+            text-align: center;
+        }
+        
+        .hero-content {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .hero h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #e55a00;
+        }
+        
+        /* Main Content */
+        .main-content {
+            display: flex;
+            margin: 40px 0;
+        }
+        
+        .features {
+            flex: 2;
+            padding-right: 30px;
+        }
+        
+        .feature-box {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-box h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        /* Login Form */
+        .login-section {
+            flex: 1;
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .login-section h3 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .form-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+        }
+        
+        .form-footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        /* Quick Links */
+        .quick-links {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin: 40px 0;
+        }
+        
+        .quick-link-item {
+            flex-basis: 23%;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .quick-link-item i {
+            font-size: 2rem;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+        }
+        
+        .quick-link-item h4 {
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 30px 0;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        
+        .footer-column {
+            flex-basis: 24%;
+            margin-bottom: 20px;
+        }
+        
+        .footer-column h4 {
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 5px;
+            display: inline-block;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 8px;
+        }
+        
+        .footer-column ul li a {
+            color: #ddd;
+            text-decoration: none;
+        }
+        
+        .footer-column ul li a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #555;
+        }
+    </style>
+</head>
+<body>
+
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h2>Welcome to Rail Madad</h2>
+                <p>Your one-stop platform for registering and resolving complaints related to railway services in India.</p>
+                <a class="btn">File a Complaint</a>
+            </div>
+        </div>
+    </section>
+
+    <div class="container">
+        <div class="main-content">
+            <div class="features">
+                <div class="feature-box">
+                    <h3>How Rail Madad Works</h3>
+                    <p>Rail Madad (Railway Madad) is an integrated complaint resolution mechanism developed to make complaint filing and tracking easier for railway passengers.</p>
+                    <ul style="margin-top: 15px; margin-left: 20px;">
+                        <li>Register your complaint through our portal</li>
+                        <li>Get a unique complaint ID for tracking</li>
+                        <li>Receive real-time updates on complaint status</li>
+                        <li>Get resolution directly from railway authorities</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-box">
+                    <h3>Types of Complaints We Handle</h3>
+                    <p>Our platform addresses various issues encountered during railway travel:</p>
+                    <ul style="margin-top: 15px; margin-left: 20px;">
+                        <li>Cleanliness & Hygiene Issues</li>
+                        <li>Catering & Food Quality</li>
+                        <li>Staff Behavior</li>
+                        <li>Coach Maintenance Problems</li>
+                        <li>Ticketing Issues</li>
+                        <li>Security Concerns</li>
+                        <li>Punctuality & Delays</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="login-section">
+                <h3>User Login</h3>
+                <form action="/login" method="POST">
+                    <div class="form-group">
+                        <label for="username">Username or Email</label>
+                        <input type="text" id="username" name="username" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                    
+                    <button type="submit" class="btn" style="width: 100%;">Login</button>
+                    
+                    <div class="form-footer">
+                        <a href="/forgot-password">Forgot Password?</a>
+                        <a href="/register">New User? Register</a>
+                    </div>
+                </form>
+                
+                <% if (locals.loginError) { %>
+                <div style="color: red; margin-top: 15px; text-align: center;">
+                    <%= loginError %>
+                </div>
+                <% } %>
+            </div>
+        </div>
+        
+        <div class="quick-links">
+            <div class="quick-link-item">
+                <i class="fas fa-file-alt"></i>
+                <h4>File New Complaint</h4>
+                <p>Register your issues with railway services</p>
+            </div>
+            
+            <div class="quick-link-item">
+                <i class="fas fa-search"></i>
+                <h4>Track Complaint</h4>
+                <p>Check the status of your registered complaint</p>
+            </div>
+            
+            <div class="quick-link-item">
+                <i class="fas fa-history"></i>
+                <h4>Complaint History</h4>
+                <p>View all your previous complaints</p>
+            </div>
+            
+            <div class="quick-link-item">
+                <i class="fas fa-phone-alt"></i>
+                <h4>Helpline</h4>
+                <p>Contact railway helpline for immediate assistance</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h4>About Rail Madad</h4>
+                    <p>Rail Madad is an official complaint resolution portal for Indian Railways, designed to handle passenger grievances efficiently.</p>
+                </div>
+                
+                <div class="footer-column">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="/about">About Us</a></li>
+                        <li><a href="/faq">FAQs</a></li>
+                        <li><a href="/guidelines">Complaint Guidelines</a></li>
+                        <li><a href="/feedback">Feedback</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h4>Contact Us</h4>
+                    <ul>
+                        <li>Toll-Free: 139</li>
+                        <li>Email: railmadad@indianrail.gov.in</li>
+                        <li>SMS: 9717630982</li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h4>Connect With Us</h4>
+                    <ul>
+                        <li><a href="#">Facebook</a></li>
+                        <li><a href="#">Twitter</a></li>
+                        <li><a href="#">Instagram</a></li>
+                        <li><a href="#">YouTube</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; <%= new Date().getFullYear() %> Rail Madad - Indian Railways. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Font Awesome for icons -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+</body>
+</html>
