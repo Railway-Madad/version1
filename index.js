@@ -21,29 +21,32 @@ if (!fs.existsSync(complaintsFile)) {
 
 // Routes
 app.get("/", (req, res) => {
-    res.render("home.ejs");
+    res.render("home");
 });
 
 app.get("/complaint", (req, res) => {
-    res.render("complaint.ejs");
+    
+    res.render("complaint", {
+        success: req.query.success,
+        error: req.query.error
+    });
 });
 
 app.post('/submit-complaint', (req, res) => {
     try {
-        // Read existing complaints
         const complaintsData = fs.readFileSync(complaintsFile);
         const complaints = JSON.parse(complaintsData);
 
-        // Create new complaint object
         const newComplaint = {
+            id: Date.now().toString(), 
             username: req.body.username,
             pnr: req.body.pnr,
             description: req.body.description,
             issueDomain: req.body.issueDomain,
+            status: "pending", 
             createdAt: new Date().toISOString()
         };
 
-        // Add new complaint and write back to file
         complaints.push(newComplaint);
         fs.writeFileSync(complaintsFile, JSON.stringify(complaints, null, 2));
 

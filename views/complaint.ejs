@@ -4,20 +4,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Railway Complaint Form</title>
+    <title>Railway Complaint Dashboard</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
+            margin: 0;
             padding: 20px;
-            background-color: #f0f0f0;
+            background-color: #f4f4f4;
         }
-        .form-container {
+        .dashboard-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px;
+            border-radius: 8px 8px 0 0;
+            text-align: center;
+        }
+        .form-section {
             background-color: white;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         .form-group {
             margin-bottom: 15px;
@@ -26,78 +36,115 @@
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
+            color: #333;
         }
         input, textarea, select {
             width: 100%;
-            padding: 8px;
+            padding: 10px;
             border: 1px solid #ddd;
             border-radius: 4px;
             box-sizing: border-box;
+            font-size: 14px;
         }
         button {
-            background-color: #4CAF50;
+            background-color: #3498db;
             color: white;
-            padding: 10px 20px;
+            padding: 12px 25px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            font-size: 16px;
         }
         button:hover {
-            background-color: #45a049;
+            background-color: #2980b9;
         }
         .success-message {
-            color: green;
+            color: #27ae60;
+            background-color: #e8f5e9;
+            padding: 10px;
+            border-radius: 4px;
             margin-bottom: 15px;
         }
         .error-message {
-            color: red;
+            color: #c0392b;
+            background-color: #ffebee;
+            padding: 10px;
+            border-radius: 4px;
             margin-bottom: 15px;
+        }
+        h3 {
+            color: #333;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+        }
+        .back-link {
+            margin-top: 15px;
+        }
+        .back-link a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        .back-link a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <div class="form-container">
-        <h2>Submit a Railway Complaint</h2>
-        
-        <% if (typeof success !== 'undefined' && success === 'true') { %>
-            <div class="success-message">Complaint submitted successfully!</div>
-        <% } %>
-        <% if (typeof error !== 'undefined' && error === 'true') { %>
-            <div class="error-message">Error submitting complaint. Please try again.</div>
-        <% } %>
+    <div class="dashboard-container">
+        <div class="header">
+            <h1>Railway Complaint Dashboard</h1>
+            <button>
+            <a href="/" style="color: #ecf0f1; text-decoration: none;">Back to Home</a>
 
-        <form action="/submit-complaint" method="POST">
-            <div class="form-group">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" required>
-            </div>
+            </button>
+        </div>
 
-            <div class="form-group">
-                <label for="pnr">PNR Number:</label>
-                <input type="text" id="pnr" name="pnr" pattern="[0-9]{10}" required 
-                       title="PNR should be 10 digits">
-            </div>
+        <div class="form-section">
+            <h3>Submit New Complaint</h3>
+            
+            <% if (typeof success !== 'undefined' && success === 'true') { %>
+                <div class="success-message">Complaint submitted successfully!</div>
+            <% } %>
+            <% if (typeof error !== 'undefined' && error === 'true') { %>
+                <div class="error-message">Error submitting complaint. Please try again.</div>
+            <% } %>
 
-            <div class="form-group">
-                <label for="description">Complaint Description:</label>
-                <textarea id="description" name="description" rows="4" required></textarea>
-            </div>
+            <form action="/submit-complaint" method="POST">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
 
-            <div class="form-group">
-                <label for="issueDomain">Issue Domain:</label>
-                <select id="issueDomain" name="issueDomain" required>
-                    <option value="">Select an issue domain</option>
-                    <option value="ticketing">Ticketing</option>
-                    <option value="cleanliness">Cleanliness</option>
-                    <option value="staff">Staff Behavior</option>
-                    <option value="facilities">Facilities</option>
-                    <option value="food">Food Services</option>
-                    <option value="other">Other</option>
-                </select>
-            </div>
+                <div class="form-group">
+                    <label for="pnr">PNR Number:</label>
+                    <input type="text" id="pnr" name="pnr" pattern="[0-9]{10}" required 
+                           title="PNR should be 10 digits">
+                </div>
 
-            <button type="submit">Submit Complaint</button>
-        </form>
+                <div class="form-group">
+                    <label for="description">Complaint Description:</label>
+                    <textarea id="description" name="description" rows="4" required></textarea>
+                </div>
+                
+
+                <div class="form-group">
+                    <label for="issueDomain">Issue Domain:</label>
+                    <select id="issueDomain" name="issueDomain" required>
+                        <option value="">Select an issue domain</option>
+                        <option value="ticketing">Ticketing</option>
+                        <option value="cleanliness">Cleanliness</option>
+                        <option value="staff">Staff Behavior</option>
+                        <option value="facilities">Facilities</option>
+                        <option value="food">Food Services</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <button type="submit">Submit Complaint</button>
+            </form>
+
+           
+        </div>
     </div>
 </body>
 </html>
