@@ -163,12 +163,12 @@ app.get("/staff-dashboard", (req, res) => {
     }
 });
 
-// API: Get Specific Complaint
-app.get("/api/complaints/:id", (req, res) => {
-    const complaints = JSON.parse(fs.readFileSync(complaintsFile));
-    const complaint = complaints.find(c => c.id === req.params.id);
-    complaint ? res.json(complaint) : res.status(404).json({ error: "Complaint not found" });
-});
+// // API: Get Specific Complaint
+// app.get("/api/complaints/:id", (req, res) => {
+//     const complaints = JSON.parse(fs.readFileSync(complaintsFile));
+//     const complaint = complaints.find(c => c.id === req.params.id);
+//     complaint ? res.json(complaint) : res.status(404).json({ error: "Complaint not found" });
+// });
 
 //new added for personal complaint
 app.get("/api/complaints/user/:username", (req, res) => {
