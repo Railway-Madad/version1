@@ -54,6 +54,7 @@
             border-radius: 4px;
             cursor: pointer;
             font-size: 16px;
+            margin-right: 10px;
         }
         button:hover {
             background-color: #2980b9;
@@ -87,15 +88,30 @@
         .back-link a:hover {
             text-decoration: underline;
         }
+        #complaints-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            display: none;
+        }
+        #complaints-table th, #complaints-table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        #complaints-table th {
+            background-color: #3498db;
+            color: white;
+        }
     </style>
 </head>
 <body>
     <div class="dashboard-container">
         <div class="header">
-            <h1>Railway Complaint Dashboard</h1>
+               <h1>Railway Complaint Dashboard</h1>
+            <p>Welcome, <%= currentUser || 'Guest' %></p>
             <button>
-            <a href="/" style="color: #ecf0f1; text-decoration: none;">Back to Home</a>
-
+                <a href="/" style="color: #ecf0f1; text-decoration: none;">Back to Home</a>
             </button>
         </div>
 
@@ -112,7 +128,7 @@
             <form action="/submit-complaint" method="POST">
                 <div class="form-group">
                     <label for="username">Username:</label>
-                    <input type="text" id="username" name="username" required>
+                    <input type="text" id="username" name="username" value="<%= currentUser || '' %>" readonly required>
                 </div>
 
                 <div class="form-group">
@@ -125,7 +141,6 @@
                     <label for="description">Complaint Description:</label>
                     <textarea id="description" name="description" rows="4" required></textarea>
                 </div>
-                
 
                 <div class="form-group">
                     <label for="issueDomain">Issue Domain:</label>
@@ -135,16 +150,83 @@
                         <option value="cleanliness">Cleanliness</option>
                         <option value="staff">Staff Behavior</option>
                         <option value="facilities">Facilities</option>
+
                         <option value="food">Food Services</option>
                         <option value="other">Other</option>
                     </select>
                 </div>
 
                 <button type="submit">Submit Complaint</button>
+                <% if (currentUser) { %>
+                    <button type="button" id="view-complaints-btn">View My Complaints</button>
+                <% } %>
             </form>
 
-           
+            <!-- Complaints Table -->
+            <table id="complaints-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>PNR</th>
+                        <th>Description</th>
+                        <th>Issue Domain</th>
+                        <th>Status</th>
+                        <th>Created At</th>
+                    </tr>
+                </thead>
+                <tbody id="complaints-body"></tbody>
+            </table>
         </div>
     </div>
+
+    <script>
+        const currentUser = "<%= currentUser || '' %>";
+        const viewComplaintsBtn = document.getElementById('view-complaints-btn');
+        const complaintsTable = document.getElementById('complaints-table');
+        const complaintsBody = document.getElementById('complaints-body');
+
+        if (viewComplaintsBtn) {
+            viewComplaintsBtn.addEventListener('click', async () => {
+                if (!currentUser) {
+                    alert('Please log in to view your complaints.');
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`/api/complaints/user/${currentUser}`);
+                    const complaints = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch complaints');
+                    }
+
+                    complaintsBody.innerHTML = ''; 
+                    if (complaints.length === 0) {
+                        complaintsBody.innerHTML = '<tr><td colspan="6">No complaints found.</td></tr>';
+                    } else {
+                        complaints.forEach(complaint => {
+                            const row = `
+                                <tr>
+                                    <td>${complaint.id}</td>
+                                    <td>${complaint.pnr}</td>
+                                    <td>${complaint.description}</td>
+                                    <td>${complaint.issueDomain}</td>
+                                    <td>${complaint.status}</td>
+                                    <td>${complaint.createdAt}</td>
+                                </tr>
+                            `;
+                            complaintsBody.innerHTML += row;
+                        });
+                    }
+                    complaintsTable.style.display = 'table'; 
+                } catch (error) {
+                    console.error('Error fetching complaints:', error);
+                    complaintsBody.innerHTML = '<tr><td colspan="6">Error loading complaints.</td></tr>';
+                    
+                    complaintsTable.style.display = 'table';
+                }
+            });
+        }
+    </script>
 </body>
 </html>

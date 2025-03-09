@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 
 const app = express();
 
-// Middleware
+
 app.use(express.json());
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -89,7 +89,12 @@ app.post('/login', (req, res) => {
             return res.render('home', { loginError: 'Invalid username or password' });
         }
 
-        res.redirect('/complaint');
+        // Render complaint.ejs directly with the username
+        res.render('complaint', {
+            success: null,
+            error: null,
+            currentUser: user.username
+        });
     } catch (error) {
         console.error('Login error:', error);
         res.render('home', { loginError: 'An error occurred' });
@@ -105,7 +110,8 @@ app.get("/", (req, res) => {
 app.get("/complaint", (req, res) => {
     res.render("complaint", {
         success: req.query.success,
-        error: req.query.error
+        error: req.query.error,
+        currentUser: null // Default to null if accessed directly
     });
 });
 
@@ -164,6 +170,18 @@ app.get("/api/complaints/:id", (req, res) => {
     complaint ? res.json(complaint) : res.status(404).json({ error: "Complaint not found" });
 });
 
+//new added for personal complaint
+app.get("/api/complaints/user/:username", (req, res) => {
+    try {
+        const complaints = JSON.parse(fs.readFileSync(complaintsFile));
+        const userComplaints = complaints.filter(c => c.username === req.params.username);
+        res.json(userComplaints);
+    } catch (error) {
+        console.error("Error fetching complaints:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
 // API: Resolve Complaint
 app.put("/api/complaints/:id/resolve", (req, res) => {
     try {
@@ -193,58 +211,49 @@ app.put("/api/complaints/:id/resolve", (req, res) => {
     }
 });
 
-//authentication function
-
+// Authentication function
 const authenticateUser = (domain, username, password) => {
-  try {
-      const filePath = path.join(__dirname, `${domain}.json`); // Select correct JSON file
-      const data = fs.readFileSync(filePath, 'utf8'); // Read JSON file
-      const users = JSON.parse(data); // Parse JSON into JS object
+    try {
+        const filePath = path.join(__dirname, `${domain}.json`); // Select correct JSON file
+        const data = fs.readFileSync(filePath, 'utf8'); // Read JSON file
+        const users = JSON.parse(data); // Parse JSON into JS object
 
-      // Check if the username and password match
-      return users.some(user => user.username === username && user.password === password);
-  } catch (error) {
-      console.error(`Error reading ${domain}.json:`, error);
-      return false;
-  }
+        // Check if the username and password match
+        return users.some(user => user.username === username && user.password === password);
+    } catch (error) {
+        console.error(`Error reading ${domain}.json:`, error);
+        return false;
+    }
 };
 
 app.get('/admin', (req, res) => {     
-  res.render('admin-login.ejs');
+    res.render('admin-login.ejs');
 });
-
 
 app.post('/admin-login', (req, res) => {  
-  console.log("Request Body:", req.body); // Debugging
+    console.log("Request Body:", req.body); // Debugging
 
-  const { domain, username, password } = req.body;
+    const { domain, username, password } = req.body;
 
-  // if (!domain || !username || !password) {
-  //     return res.send("Missing credentials. Please fill all fields.");
-  // }
+    console.log("Domain:", domain);
+    console.log("Username:", username);
 
-  console.log("Domain:", domain)
-  console.log("Username:", username)
+    if (domain === 'admin' || domain === 'staff') {
+        const isAuthenticated = authenticateUser(domain, username, password);
 
-  if (domain === 'admin' || domain === 'staff') {
-      const isAuthenticated = authenticateUser(domain, username, password);
-
-      if (isAuthenticated) {
-          // res.send("ok"); // Render secret.ejs upon successful login
-          if(domain === 'admin'){
-              res.render('admin-dashboard.ejs');
-          } else {
-              res.redirect('/staff-dashboard');
-          }
-      } else {
-          res.send('Invalid username or password. Please try again.');
-      }
-  } else {
-      res.send('Invalid domain selection.');
-  }
+        if (isAuthenticated) {
+            if (domain === 'admin') {
+                res.render('admin-dashboard.ejs');
+            } else {
+                res.redirect('/staff-dashboard');
+            }
+        } else {
+            res.send('Invalid username or password. Please try again.');
+        }
+    } else {
+        res.send('Invalid domain selection.');
+    }
 });
-
-
 
 // Start Server
 app.listen(3000, () => {
