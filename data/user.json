@@ -1,0 +1,26 @@
+[
+    {
+      "id": 1,
+      "fullname": "kas",
+      "email": "vedantvvk5@gmail.com",
+      "username": "kas",
+      "password": "kas",
+      "createdAt": "2025-03-09T10:25:54.953Z"
+    },
+    {
+      "id": 2,
+      "fullname": "vineet",
+      "email": "v@v",
+      "username": "vin",
+      "password": "vi",
+      "createdAt": "2025-03-11T17:11:52.230Z"
+    },
+    {
+      "id": 3,
+      "fullname": "vi",
+      "email": "vin@g",
+      "username": "vi",
+      "password": "vi",
+      "createdAt": "2025-03-11T17:12:31.755Z"
+    }
+  ]
