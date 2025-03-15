@@ -17,8 +17,11 @@
     "pnr": "4507306549",
     "description": "ewdsds",
     "issueDomain": "facilities",
-    "status": "Pending",
-    "createdAt": "2025-03-15T14:32:43.837Z"
+    "status": "Resolved",
+    "createdAt": "2025-03-15T14:32:43.837Z",
+    "resolutionDetails": "454561",
+    "resolutionCategory": "Compensation Provided",
+    "resolvedAt": "2025-03-15T15:17:33.972Z"
   },
   {
     "id": "1742049318183",
@@ -26,8 +29,11 @@
     "pnr": "4507306549",
     "description": "dsadasdasd",
     "issueDomain": "food",
-    "status": "Pending",
-    "createdAt": "2025-03-15T14:35:18.183Z"
+    "status": "Resolved",
+    "createdAt": "2025-03-15T14:35:18.183Z",
+    "resolutionDetails": "fddfdfdf",
+    "resolutionCategory": "Alternative Solution Provided",
+    "resolvedAt": "2025-03-15T15:22:49.799Z"
   },
   {
     "id": "1742051037598",
@@ -35,8 +41,11 @@
     "pnr": "1234567890",
     "description": "fasdfdasfasd",
     "issueDomain": "other",
-    "status": "Pending",
-    "createdAt": "2025-03-15T15:03:57.598Z"
+    "status": "Resolved",
+    "createdAt": "2025-03-15T15:03:57.598Z",
+    "resolutionDetails": "fsfd",
+    "resolutionCategory": "Alternative Solution Provided",
+    "resolvedAt": "2025-03-15T15:22:59.934Z"
   },
   {
     "id": "1742051055426",
@@ -44,8 +53,11 @@
     "pnr": "1234567890",
     "description": "asdfasdf",
     "issueDomain": "facilities",
-    "status": "Pending",
-    "createdAt": "2025-03-15T15:04:15.426Z"
+    "status": "Resolved",
+    "createdAt": "2025-03-15T15:04:15.426Z",
+    "resolutionDetails": "drgdfg",
+    "resolutionCategory": "Alternative Solution Provided",
+    "resolvedAt": "2025-03-15T15:24:30.382Z"
   },
   {
     "id": "1742051075658",
@@ -91,5 +103,14 @@
     "issueDomain": "facilities",
     "status": "Pending",
     "createdAt": "2025-03-15T15:11:06.682Z"
+  },
+  {
+    "id": "1742051800897",
+    "username": "kas",
+    "pnr": "1234567890",
+    "description": "afsdfasdf",
+    "issueDomain": "cleanliness",
+    "status": "Pending",
+    "createdAt": "2025-03-15T15:16:40.897Z"
   }
 ]
