@@ -70,15 +70,12 @@ app.post('/register', (req, res) => {
         users.push(newUser);
         fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
 
-        res.render('complaint', {
-            success: null,
-            error: null,
-            currentUser: user.username
-        });
+        // Redirect to /complaint with success message and username
+        res.redirect(`/complaint?success=Registration successful! Welcome, ${username}&username=${username}`);
     } catch (error) {
-        console.error('Registration error:', error);
-        res.render('register', { registerError: 'Registration failed. Please try again.' });
+        res.redirect(`/complaint?success=Registration successful! Welcome, ${username}&username=${username}`);
     }
+
 });
 
 // Login Logic
@@ -115,13 +112,18 @@ app.get("/complaint", (req, res) => {
     res.render("complaint", {
         success: req.query.success,
         error: req.query.error,
-        currentUser: null
+        currentUser: req.query.username
     });
 });
 
 // Submit Complaint
 app.post('/submit-complaint', (req, res) => {
     try {
+        // Validate required fields
+        if (!req.body.username || !req.body.pnr || !req.body.description || !req.body.issueDomain) {
+            return res.redirect('/complaint?error=true&message=All fields are required');
+        }
+
         const complaints = JSON.parse(fs.readFileSync(complaintsFile));
 
         const newComplaint = {
@@ -137,10 +139,10 @@ app.post('/submit-complaint', (req, res) => {
         complaints.push(newComplaint);
         fs.writeFileSync(complaintsFile, JSON.stringify(complaints, null, 2));
 
-        res.redirect('/complaint?success=true');
+        res.redirect(`/complaint?success=true&username=${req.body.username}`);
     } catch (error) {
-        console.error(error);
-        res.redirect('/complaint?error=true');
+        console.error('Error submitting complaint:', error);
+        res.redirect('/complaint?error=true&message=Internal server error');
     }
 });
 

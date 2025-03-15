@@ -14,5 +14,21 @@
     "username": "pur",
     "password": "123",
     "createdAt": "2025-03-15T12:44:57.105Z"
+  },
+  {
+    "id": 4,
+    "fullname": "dsd",
+    "email": "w@s.c",
+    "username": "ccccc",
+    "password": "123",
+    "createdAt": "2025-03-15T14:53:29.327Z"
+  },
+  {
+    "id": 5,
+    "fullname": "ved",
+    "email": "devlomentpurpose@gmail.com",
+    "username": "ved",
+    "password": "ved",
+    "createdAt": "2025-03-15T15:03:03.206Z"
   }
 ]
