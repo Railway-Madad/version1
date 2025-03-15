@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.dashboard {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.stats, .complaints {
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th, table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+table th {
+    background-color: #f4f4f9;
+    font-weight: bold;
+}
+    </style>
+</head>
+<body>
+    <h1>Welcome, Admin</h1>
+    <div class="dashboard">
+        <div class="stats">
+            <h2>Statistics</h2>
+            <p>Total Complaints: <%= totalComplaints %></p>
+            <p>Pending Complaints: <%= pendingComplaints %></p>
+            <p>Resolved Complaints: <%= resolvedComplaints %></p>
+            <p>Total Users: <%= totalUsers %></p>
+        </div>
+        <div class="complaints">
+            <h2>Recent Complaints</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Created At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% complaints.forEach(complaint => { %>
+                        <tr>
+                            <td><%= complaint.id %></td>
+                            <td><%= complaint.username %></td>
+                            <td><%= complaint.description %></td>
+                            <td><%= complaint.status %></td>
+                            <td><%= complaint.createdAt %></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

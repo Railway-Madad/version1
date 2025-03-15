@@ -247,7 +247,22 @@ app.post('/admin-login', (req, res) => {
 
         if (isAuthenticated) {
             if (domain === 'admin') {
-                res.render('admin-dashboard.ejs');
+                // Fetch data for the dashboard
+            const complaints = JSON.parse(fs.readFileSync(complaintsFile, 'utf8'));
+            const users = JSON.parse(fs.readFileSync(USERS_FILE, 'utf8'));
+
+            const totalComplaints = complaints.length;
+            const pendingComplaints = complaints.filter(c => c.status === 'Pending').length;
+            const resolvedComplaints = complaints.filter(c => c.status === 'Resolved').length;
+            const totalUsers = users.length;
+
+            res.render('admin-dashboard.ejs', {
+                totalComplaints,
+                pendingComplaints,
+                resolvedComplaints,
+                totalUsers,
+                complaints: complaints.slice(0, 5) // Show only the 5 most recent complaints
+            });
             } else {
                 try {
                     const complaints = JSON.parse(fs.readFileSync(complaintsFile));
@@ -259,7 +274,7 @@ app.post('/admin-login', (req, res) => {
                     const totalPages = Math.ceil(complaints.length / itemsPerPage);
             
                     res.render("staff_dashboard.ejs", {
-                        staffName: "Railway Staff",
+                        staffName: username,
                         complaints: paginatedComplaints,
                         currentPage: page,
                         totalPages
