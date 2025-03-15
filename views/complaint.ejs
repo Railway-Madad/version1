@@ -5,124 +5,325 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Railway Complaint Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        :root {
+            --primary-color: #1a5fb4;
+            --secondary-color: #ff6600;
+            --accent-color: #3584e4;
+            --bg-light: #f6f8fa;
+            --text-dark: #333;
+            --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
             margin: 0;
-            padding: 20px;
-            background-color: #f4f4f4;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
-        .dashboard-container {
-            max-width: 1000px;
+        
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            margin: 0;
+        }
+        
+        /* Navigation */
+        .navbar {
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
             margin: 0 auto;
+            padding: 0 20px;
         }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+            color: var(--secondary-color);
+        }
+        
+        .dashboard-container {
+            flex: 1;
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        
         .header {
-            background-color: #2c3e50;
+            background-color: var(--primary-color);
             color: white;
-            padding: 15px;
-            border-radius: 8px 8px 0 0;
-            text-align: center;
+            padding: 20px;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+        }
+        
+        .header p {
+            margin: 5px 0 0;
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        .header-content {
+            flex: 1;
+        }
+        
         .form-section {
             background-color: white;
-            padding: 20px;
-            border-radius: 0 0 8px 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 35px;
+            border-radius: 0 0 10px 10px;
+            box-shadow: var(--card-shadow);
         }
+        
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
+        
         label {
             display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #333;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #444;
         }
+        
         input, textarea, select {
             width: 100%;
-            padding: 10px;
+            padding: 12px 15px;
             border: 1px solid #ddd;
-            border-radius: 4px;
+            border-radius: 5px;
             box-sizing: border-box;
-            font-size: 14px;
+            font-size: 1rem;
+            transition: var(--transition);
         }
-        button {
-            background-color: #3498db;
+        
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(26, 95, 180, 0.1);
+            outline: none;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            background-color: var(--secondary-color);
             color: white;
-            padding: 12px 25px;
             border: none;
-            border-radius: 4px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
             cursor: pointer;
-            font-size: 16px;
+            transition: var(--transition);
+            text-align: center;
+            font-size: 1rem;
             margin-right: 10px;
         }
-        button:hover {
-            background-color: #2980b9;
+        
+        .btn:hover {
+            background-color: #e55a00;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(229, 90, 0, 0.2);
         }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: #1251a0;
+            box-shadow: 0 6px 12px rgba(26, 95, 180, 0.2);
+        }
+        
+        h3 {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 80px;
+            height: 3px;
+            background-color: var(--secondary-color);
+        }
+        
         .success-message {
             color: #27ae60;
             background-color: #e8f5e9;
-            padding: 10px;
+            border-left: 4px solid #27ae60;
+            padding: 12px 15px;
             border-radius: 4px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
         }
+        
         .error-message {
-            color: #c0392b;
-            background-color: #ffebee;
-            padding: 10px;
+            color: #e74c3c;
+            background-color: #fdf1f0;
+            border-left: 4px solid #e74c3c;
+            padding: 12px 15px;
             border-radius: 4px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
         }
-        h3 {
-            color: #333;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 5px;
-        }
+        
         .back-link {
             margin-top: 15px;
         }
+        
         .back-link a {
-            color: #3498db;
+            color: var(--primary-color);
             text-decoration: none;
+            transition: var(--transition);
+            font-weight: 500;
         }
+        
         .back-link a:hover {
+            color: var(--secondary-color);
             text-decoration: underline;
         }
+        
         #complaints-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin-top: 30px;
             display: none;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
+        
         #complaints-table th, #complaints-table td {
-            padding: 10px;
-            border: 1px solid #ddd;
+            padding: 12px 15px;
+            border: 1px solid #eee;
             text-align: left;
         }
+        
         #complaints-table th {
-            background-color: #3498db;
+            background-color: var(--primary-color);
             color: white;
+            font-weight: 500;
+        }
+        
+        #complaints-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        #complaints-table tr:hover {
+            background-color: #f1f8ff;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            margin-top: auto;
+        }
+        
+        .copyright {
+            text-align: center;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .header button {
+                margin-top: 15px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .form-section {
+                padding: 25px 20px;
+            }
+            
+            .dashboard-container {
+                padding: 0 15px;
+                margin: 20px auto;
+            }
         }
     </style>
 </head>
 <body>
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="/" class="logo">
+                <i class="fas fa-train"></i>
+                Rail Madad
+            </a>
+        </div>
+    </nav>
+
     <div class="dashboard-container">
         <div class="header">
-               <h1>Railway Complaint Dashboard</h1>
-            <p>Welcome, <%= currentUser || 'Guest' %></p>
-            <button>
-                <a href="/" style="color: #ecf0f1; text-decoration: none;">Back to Home</a>
-            </button>
+            <div class="header-content">
+                <h1>Railway Complaint Dashboard</h1>
+                <p>Welcome, <%= currentUser || 'Guest' %></p>
+            </div>
+            <a href="/" class="btn btn-primary">
+                <i class="fas fa-home"></i> Back to Home
+            </a>
         </div>
 
         <div class="form-section">
             <h3>Submit New Complaint</h3>
             
             <% if (typeof success !== 'undefined' && success === 'true') { %>
-                <div class="success-message">Complaint submitted successfully!</div>
+                <div class="success-message">
+                    <i class="fas fa-check-circle"></i> Complaint submitted successfully!
+                </div>
             <% } %>
             <% if (typeof error !== 'undefined' && error === 'true') { %>
-                <div class="error-message">Error submitting complaint. Please try again.</div>
+                <div class="error-message">
+                    <i class="fas fa-exclamation-circle"></i> Error submitting complaint. Please try again.
+                </div>
             <% } %>
 
             <form action="/submit-complaint" method="POST">
@@ -150,15 +351,18 @@
                         <option value="cleanliness">Cleanliness</option>
                         <option value="staff">Staff Behavior</option>
                         <option value="facilities">Facilities</option>
-
                         <option value="food">Food Services</option>
                         <option value="other">Other</option>
                     </select>
                 </div>
 
-                <button type="submit">Submit Complaint</button>
+                <button type="submit" class="btn">
+                    <i class="fas fa-paper-plane"></i> Submit Complaint
+                </button>
                 <% if (currentUser) { %>
-                    <button type="button" id="view-complaints-btn">View My Complaints</button>
+                    <button type="button" id="view-complaints-btn" class="btn btn-primary">
+                        <i class="fas fa-list"></i> View My Complaints
+                    </button>
                 <% } %>
             </form>
 
@@ -178,6 +382,14 @@
             </table>
         </div>
     </div>
+    
+    <footer>
+        <div class="container">
+            <div class="copyright">
+                <p>&copy; <%= new Date().getFullYear() %> Rail Madad - Indian Railways. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
 
     <script>
         const currentUser = "<%= currentUser || '' %>";
