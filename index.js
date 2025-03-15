@@ -111,13 +111,13 @@ app.get("/", (req, res) => {
 });
 
 // Complaint Form
-// app.get("/complaint", (req, res) => {
-//     res.render("complaint", {
-//         success: req.query.success,
-//         error: req.query.error,
-//         currentUser: null
-//     });
-// });
+app.get("/complaint", (req, res) => {
+    res.render("complaint", {
+        success: req.query.success,
+        error: req.query.error,
+        currentUser: null
+    });
+});
 
 // Submit Complaint
 app.post('/submit-complaint', (req, res) => {
