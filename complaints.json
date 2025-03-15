@@ -5,7 +5,10 @@
     "pnr": "1234567890",
     "description": "fasdfasdfasfsda",
     "issueDomain": "food",
-    "status": "Pending",
-    "createdAt": "2025-03-09T10:26:30.036Z"
+    "status": "Resolved",
+    "createdAt": "2025-03-09T10:26:30.036Z",
+    "resolutionDetails": " fnakfnanifas",
+    "resolutionCategory": "Issue Resolved",
+    "resolvedAt": "2025-03-15T12:54:24.804Z"
   }
 ]

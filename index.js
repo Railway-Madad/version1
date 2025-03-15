@@ -70,7 +70,11 @@ app.post('/register', (req, res) => {
         users.push(newUser);
         fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
 
-        res.redirect('/');
+        res.render('complaint', {
+            success: null,
+            error: null,
+            currentUser: user.username
+        });
     } catch (error) {
         console.error('Registration error:', error);
         res.render('register', { registerError: 'Registration failed. Please try again.' });
@@ -107,13 +111,13 @@ app.get("/", (req, res) => {
 });
 
 // Complaint Form
-app.get("/complaint", (req, res) => {
-    res.render("complaint", {
-        success: req.query.success,
-        error: req.query.error,
-        currentUser: null // Default to null if accessed directly
-    });
-});
+// app.get("/complaint", (req, res) => {
+//     res.render("complaint", {
+//         success: req.query.success,
+//         error: req.query.error,
+//         currentUser: null
+//     });
+// });
 
 // Submit Complaint
 app.post('/submit-complaint', (req, res) => {
@@ -141,34 +145,34 @@ app.post('/submit-complaint', (req, res) => {
 });
 
 // Staff Dashboard with Pagination
-app.get("/staff-dashboard", (req, res) => {
-    try {
-        const complaints = JSON.parse(fs.readFileSync(complaintsFile));
+// app.get("/staff-dashboard", (req, res) => {
+//     try {
+//         const complaints = JSON.parse(fs.readFileSync(complaintsFile));
 
-        const page = parseInt(req.query.page) || 1;
-        const itemsPerPage = 5;
-        const startIndex = (page - 1) * itemsPerPage;
-        const paginatedComplaints = complaints.slice(startIndex, startIndex + itemsPerPage);
-        const totalPages = Math.ceil(complaints.length / itemsPerPage);
+//         const page = parseInt(req.query.page) || 1;
+//         const itemsPerPage = 5;
+//         const startIndex = (page - 1) * itemsPerPage;
+//         const paginatedComplaints = complaints.slice(startIndex, startIndex + itemsPerPage);
+//         const totalPages = Math.ceil(complaints.length / itemsPerPage);
 
-        res.render("staff_dashboard.ejs", {
-            staffName: "Railway Staff",
-            complaints: paginatedComplaints,
-            currentPage: page,
-            totalPages
-        });
-    } catch (error) {
-        console.error("Error loading complaints:", error);
-        res.render("staff_dashboard.ejs", { staffName: "Railway Staff", complaints: [], currentPage: 1, totalPages: 1 });
-    }
-});
+//         res.render("staff_dashboard.ejs", {
+//             staffName: "Railway Staff",
+//             complaints: paginatedComplaints,
+//             currentPage: page,
+//             totalPages
+//         });
+//     } catch (error) {
+//         console.error("Error loading complaints:", error);
+//         res.render("staff_dashboard.ejs", { staffName: "Railway Staff", complaints: [], currentPage: 1, totalPages: 1 });
+//     }
+// });
 
 // // API: Get Specific Complaint
-// app.get("/api/complaints/:id", (req, res) => {
-//     const complaints = JSON.parse(fs.readFileSync(complaintsFile));
-//     const complaint = complaints.find(c => c.id === req.params.id);
-//     complaint ? res.json(complaint) : res.status(404).json({ error: "Complaint not found" });
-// });
+app.get("/api/complaints/:id", (req, res) => {
+    const complaints = JSON.parse(fs.readFileSync(complaintsFile));
+     const complaint = complaints.find(c => c.id === req.params.id);
+     complaint ? res.json(complaint) : res.status(404).json({ error: "Complaint not found" });
+});
 
 //new added for personal complaint
 app.get("/api/complaints/user/:username", (req, res) => {
@@ -245,7 +249,25 @@ app.post('/admin-login', (req, res) => {
             if (domain === 'admin') {
                 res.render('admin-dashboard.ejs');
             } else {
-                res.redirect('/staff-dashboard');
+                try {
+                    const complaints = JSON.parse(fs.readFileSync(complaintsFile));
+            
+                    const page = parseInt(req.query.page) || 1;
+                    const itemsPerPage = 5;
+                    const startIndex = (page - 1) * itemsPerPage;
+                    const paginatedComplaints = complaints.slice(startIndex, startIndex + itemsPerPage);
+                    const totalPages = Math.ceil(complaints.length / itemsPerPage);
+            
+                    res.render("staff_dashboard.ejs", {
+                        staffName: "Railway Staff",
+                        complaints: paginatedComplaints,
+                        currentPage: page,
+                        totalPages
+                    });
+                } catch (error) {
+                    console.error("Error loading complaints:", error);
+                    res.render("staff_dashboard.ejs", { staffName: "Railway Staff", complaints: [], currentPage: 1, totalPages: 1 });
+                }
             }
         } else {
             res.send('Invalid username or password. Please try again.');
