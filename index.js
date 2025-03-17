@@ -35,6 +35,18 @@ app.get('/register', (req, res) => {
     res.render('register', { registerError: null });
 });
 
+app.get('/about' , (req,res)=>{
+    res.render('aboutus.ejs');
+}); 
+
+app.get('/faq' , (req,res) =>{
+    res.render("faq.ejs");
+});
+
+app.get('/feedback' , (req,res) => {
+    res.render("feedback.ejs");
+});
+
 // Registration Logic (No bcrypt, stores password as-is)
 app.post('/register', (req, res) => {
     const { fullname, email, username, password, confirmPassword } = req.body;
