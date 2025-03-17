@@ -244,12 +244,49 @@ const authenticateUser = (domain, username, password) => {
     }
 };
 
+const sqlite3 = require("sqlite3").verbose();
+
+const db = new sqlite3.Database(":memory:", (err) => {
+    if (err) {
+        console.error("Error opening database:", err.message);
+    } else {
+        console.log("Connected to SQLite in-memory database.");
+
+        // Create users table
+        db.run(
+            `CREATE TABLE users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT NOT NULL,
+                password TEXT NOT NULL
+            )`,
+            (err) => {
+                if (err) {
+                    console.error("Error creating table:", err.message);
+                } else {
+                    console.log("Users table created.");
+
+                    // Insert two hardcoded admin users
+                    db.run(
+                        `INSERT INTO users (username, password) VALUES 
+                        ('admin1@gmail.com', 'adminpass123'), 
+                        ('admin2@gmail.com', 'secureAdmin456')`,
+                        (err) => {
+                            if (err) console.error("Error inserting users:", err.message);
+                            else console.log("Admin users inserted.");
+                        }
+                    );
+                }
+            }
+        );
+    }
+});
+
 app.get('/admin', (req, res) => {     
     res.render('admin-login.ejs');
 });
 
 app.post('/admin-login', (req, res) => {  
-    console.log("Request Body:", req.body); // Debugging
+    console.log("Request Body:", req.body); 
 
     const { domain, username, password } = req.body;
 
@@ -257,37 +294,58 @@ app.post('/admin-login', (req, res) => {
     console.log("Username:", username);
 
     if (domain === 'admin' || domain === 'staff') {
-        const isAuthenticated = authenticateUser(domain, username, password);
+        let isAuthenticated = false;
 
-        if (isAuthenticated) {
-            if (domain === 'admin') {
-                // Fetch data for the dashboard
-            const complaints = JSON.parse(fs.readFileSync(complaintsFile, 'utf8'));
-            const users = JSON.parse(fs.readFileSync(USERS_FILE, 'utf8'));
+        if (domain === 'admin') {
+            // Check admin credentials in SQLite
+            db.get(
+                `SELECT * FROM users WHERE username = ? AND password = ?`, 
+                [username, password], 
+                (err, row) => {
+                    if (err) {
+                        console.error("Database error:", err.message);
+                        return res.send("Internal server error.");
+                    }
 
-            const totalComplaints = complaints.length;
-            const pendingComplaints = complaints.filter(c => c.status === 'Pending').length;
-            const resolvedComplaints = complaints.filter(c => c.status === 'Resolved').length;
-            const totalUsers = users.length;
+                    isAuthenticated = !!row; // If a matching row exists, authentication is true
 
-            res.render('admin-dashboard.ejs', {
-                totalComplaints,
-                pendingComplaints,
-                resolvedComplaints,
-                totalUsers,
-                complaints: complaints.slice(0, 5) // Show only the 5 most recent complaints
-            });
-            } else {
-                // Redirect to the staff dashboard
-                res.redirect('/staff-dashboard');
-            }
+                    if (isAuthenticated) {
+                        // Fetch data for the dashboard
+                        const complaints = JSON.parse(fs.readFileSync(complaintsFile, 'utf8'));
+                        const users = JSON.parse(fs.readFileSync(USERS_FILE, 'utf8'));
+
+                        const totalComplaints = complaints.length;
+                        const pendingComplaints = complaints.filter(c => c.status === 'Pending').length;
+                        const resolvedComplaints = complaints.filter(c => c.status === 'Resolved').length;
+                        const totalUsers = users.length;
+
+                        res.render('admin-dashboard.ejs', {
+                            totalComplaints,
+                            pendingComplaints,
+                            resolvedComplaints,
+                            totalUsers,
+                            complaints: complaints.slice(0, 5) 
+                        });
+                    } else {
+                        res.send('Invalid username or password. Please try again.');
+                    }
+                }
+            );
         } else {
-            res.send('Invalid username or password. Please try again.');
+            // Staff authentication (still using JSON)
+            isAuthenticated = authenticateUser(domain, username, password);
+
+            if (isAuthenticated) {
+                res.redirect('/staff-dashboard');
+            } else {
+                res.send('Invalid username or password. Please try again.');
+            }
         }
     } else {
         res.send('Invalid domain selection.');
     }
 });
+
 
 // Start Server
 app.listen(3000, () => {
