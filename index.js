@@ -297,7 +297,7 @@ app.post('/admin-login', (req, res) => {
         let isAuthenticated = false;
 
         if (domain === 'admin') {
-            // Check admin credentials in SQLite
+            
             db.get(
                 `SELECT * FROM users WHERE username = ? AND password = ?`, 
                 [username, password], 
@@ -307,7 +307,7 @@ app.post('/admin-login', (req, res) => {
                         return res.send("Internal server error.");
                     }
 
-                    isAuthenticated = !!row; // If a matching row exists, authentication is true
+                    isAuthenticated = !!row; 
 
                     if (isAuthenticated) {
                         // Fetch data for the dashboard
@@ -332,7 +332,7 @@ app.post('/admin-login', (req, res) => {
                 }
             );
         } else {
-            // Staff authentication (still using JSON)
+            
             isAuthenticated = authenticateUser(domain, username, password);
 
             if (isAuthenticated) {
