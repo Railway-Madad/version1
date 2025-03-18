@@ -74,8 +74,11 @@
     "pnr": "1234567890",
     "description": "235345315351353",
     "issueDomain": "cleanliness",
-    "status": "Pending",
-    "createdAt": "2025-03-15T15:08:19.632Z"
+    "status": "Resolved",
+    "createdAt": "2025-03-15T15:08:19.632Z",
+    "resolutionDetails": "vbvb",
+    "resolutionCategory": "Compensation Provided",
+    "resolvedAt": "2025-03-18T09:00:01.759Z"
   },
   {
     "id": "1742051347480",
@@ -112,5 +115,26 @@
     "issueDomain": "cleanliness",
     "status": "Pending",
     "createdAt": "2025-03-15T15:16:40.897Z"
+  },
+  {
+    "id": "1742286484037",
+    "username": "kas",
+    "pnr": "1234567890",
+    "description": "fggfghjjhgfdfghjkkjhgfdd",
+    "issueDomain": "other",
+    "status": "Resolved",
+    "createdAt": "2025-03-18T08:28:04.038Z",
+    "resolutionDetails": "sfsdfsdfsf",
+    "resolutionCategory": "Alternative Solution Provided",
+    "resolvedAt": "2025-03-18T08:31:13.745Z"
+  },
+  {
+    "id": "1742288360112",
+    "username": "kas",
+    "pnr": "1234567890",
+    "description": "dsdf",
+    "issueDomain": "cleanliness",
+    "status": "Pending",
+    "createdAt": "2025-03-18T08:59:20.112Z"
   }
 ]
