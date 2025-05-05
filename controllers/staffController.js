@@ -4,7 +4,24 @@ const bcrypt = require('bcryptjs');
 
 // Render Staff Dashboard
 exports.getStaffDashboard = async (req, res) => {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+        return res.render('staff_login', { error: 'Username and password are required' });
+    }
+
     try {
+        const staff = await Staff.findOne({ username });
+        if (!staff) {
+            return res.render('staff_login', { error: 'Invalid username or password' });
+        }
+
+        const isMatch = await bcrypt.compare(password, staff.password);
+        if (!isMatch) {
+            return res.render('staff_login', { error: 'Invalid username or password' });
+        }
+
+        // Auth successful, fetch complaints
         const page = parseInt(req.query.page) || 1;
         const itemsPerPage = 5;
         const totalComplaints = await Complaint.countDocuments();
@@ -16,19 +33,14 @@ exports.getStaffDashboard = async (req, res) => {
             .sort({ createdAt: -1 });
 
         res.render('staff_dashboard', {
-            staffName: 'Railway Staff',
+            staffName: staff.username,
             complaints,
             currentPage: page,
             totalPages
         });
     } catch (error) {
         console.error('Error loading staff dashboard:', error);
-        res.render('staff_dashboard', {
-            staffName: 'Railway Staff',
-            complaints: [],
-            currentPage: 1,
-            totalPages: 1
-        });
+        res.render('staff_login', { error: 'An error occurred during login' });
     }
 };
 
