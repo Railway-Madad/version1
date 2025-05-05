@@ -1,5 +1,5 @@
-const Complaint = require('../models/Complaint');
-const Staff = require('../models/Staff');
+const Complaint = require('../models/ComplaintModel');
+const Staff = require('../models/StaffModel');
 const bcrypt = require('bcryptjs');
 
 // Render Staff Dashboard

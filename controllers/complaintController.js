@@ -1,80 +1,31 @@
 const Complaint = require('../models/ComplaintModel');
 
-<<<<<<< Updated upstream
-// Render the complaint form
-=======
->>>>>>> Stashed changes
+// Render complaint form (GET)
 exports.getComplaintForm = (req, res) => {
-    const { username, success, error } = req.query;
-    res.render('complaint', { currentUser: username, success, error });
+    res.render('complaint_form');
 };
 
-<<<<<<< Updated upstream
-// Handle complaint submission
-=======
->>>>>>> Stashed changes
+// Handle complaint submission (POST)
 exports.postComplaint = async (req, res) => {
     const { username, pnr, description, issueDomain } = req.body;
 
-    if (!username || !pnr || !description || !issueDomain) {
-        return res.redirect(`/complaint?error=All fields are required.&username=${username}`);
-    }
-
     try {
-
-        const newComplaint = new Complaint({
-
         const complaint = new Complaint({
-
             username,
             pnr,
             description,
-            issueDomain
-        });
-        await newComplaint.save();
-        res.redirect(`/complaint?success=Complaint submitted successfully!&username=${username}`);
-    } catch (err) {
-        console.error('Error saving complaint:', err);
-        res.redirect(`/complaint?error=Something went wrong. Please try again.&username=${username}`);
-    }
-};
-
-// View all complaints (for admin or dashboard)
-exports.getAllComplaints = async (req, res) => {
-    try {
-        const complaints = await Complaint.find().sort({ createdAt: -1 });
-        res.render('admin-dashboard', { complaints });
-    } catch (err) {
-        console.error('Error fetching complaints:', err);
-        res.send('Error fetching complaints.');
-    }
-};
-
-// Resolve a complaint
-exports.resolveComplaint = async (req, res) => {
-    const { id } = req.params;
-    const { resolutionDetails, resolutionCategory } = req.body;
-
-    try {
-        await Complaint.findByIdAndUpdate(id, {
-            status: 'Resolved',
-            resolutionDetails,
-            resolutionCategory,
-            resolvedAt: new Date()
+            issueDomain,
         });
 
-        res.redirect('/admin-dashboard');
-    } catch (err) {
-        console.error('Error resolving complaint:', err);
-        res.send('Error resolving complaint.');
         await complaint.save();
-        res.redirect('/complaint');
+        res.redirect(`/complaint?success=Complaint submitted successfully!&username=${username}`);
     } catch (error) {
         console.error('Error submitting complaint:', error);
         res.render('complaint_form', { error: 'An error occurred while submitting the complaint.' });
     }
 };
 
+// Get a complaint by ID (GET)
 exports.getComplaintById = async (req, res) => {
     try {
         const complaint = await Complaint.findById(req.params.id);
@@ -88,6 +39,7 @@ exports.getComplaintById = async (req, res) => {
     }
 };
 
+// Get all complaints by a specific user (GET)
 exports.getComplaintsByUser = async (req, res) => {
     try {
         const complaints = await Complaint.find({ username: req.params.username });
@@ -98,6 +50,7 @@ exports.getComplaintsByUser = async (req, res) => {
     }
 };
 
+// Mark a complaint as resolved (PUT)
 exports.resolveComplaint = async (req, res) => {
     try {
         const complaint = await Complaint.findByIdAndUpdate(
@@ -109,6 +62,7 @@ exports.resolveComplaint = async (req, res) => {
         if (!complaint) {
             return res.status(404).send('Complaint not found');
         }
+
         res.json(complaint);
     } catch (error) {
         console.error('Error resolving complaint:', error);
@@ -116,6 +70,7 @@ exports.resolveComplaint = async (req, res) => {
     }
 };
 
+// Get all complaints with pagination (GET)
 exports.getPaginatedComplaints = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const itemsPerPage = 5;
@@ -126,6 +81,7 @@ exports.getPaginatedComplaints = async (req, res) => {
         const complaints = await Complaint.find()
             .skip((page - 1) * itemsPerPage)
             .limit(itemsPerPage);
+
         res.render('staff_dashboard', {
             staffName: 'Railway Staff',
             complaints,
@@ -140,6 +96,5 @@ exports.getPaginatedComplaints = async (req, res) => {
             currentPage: 1,
             totalPages: 1
         });
->>>>>>> Stashed changes
     }
 };

@@ -1,6 +1,6 @@
-const Admin = require('../models/Admin');
-const Complaint = require('../models/Complaint');
-const User = require('../models/User');
+const Admin = require('../models/AdminModel');
+const Complaint = require('../models/ComplaintModel');
+const User = require('../models/UserModel');
 
 // Render the admin login page
 exports.getAdminLogin = (req, res) => {
