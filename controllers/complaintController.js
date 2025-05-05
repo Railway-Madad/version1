@@ -1,4 +1,4 @@
-const Complaint = require('../models/Complaint');
+const Complaint = require('../models/ComplaintModel');
 
 // Render the complaint form
 exports.getComplaintForm = (req, res) => {
