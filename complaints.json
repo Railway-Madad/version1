@@ -65,8 +65,11 @@
     "pnr": "1234567890",
     "description": "fasdfsdafa",
     "issueDomain": "cleanliness",
-    "status": "Pending",
-    "createdAt": "2025-03-15T15:04:35.658Z"
+    "status": "Resolved",
+    "createdAt": "2025-03-15T15:04:35.658Z",
+    "resolutionDetails": "rfdffd",
+    "resolutionCategory": "Issue Resolved",
+    "resolvedAt": "2025-03-18T12:15:52.088Z"
   },
   {
     "id": "1742051299632",
@@ -136,5 +139,23 @@
     "issueDomain": "cleanliness",
     "status": "Pending",
     "createdAt": "2025-03-18T08:59:20.112Z"
+  },
+  {
+    "id": "1742300347598",
+    "username": "kas",
+    "pnr": "1234567890",
+    "description": "eadSAad",
+    "issueDomain": "ticketing",
+    "status": "Pending",
+    "createdAt": "2025-03-18T12:19:07.598Z"
+  },
+  {
+    "id": "1746449561844",
+    "username": "xyx",
+    "pnr": "1020304050",
+    "description": "just simple complaint",
+    "issueDomain": "cleanliness",
+    "status": "Pending",
+    "createdAt": "2025-05-05T12:52:41.844Z"
   }
 ]

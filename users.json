@@ -30,5 +30,13 @@
     "username": "ved",
     "password": "ved",
     "createdAt": "2025-03-15T15:03:03.206Z"
+  },
+  {
+    "id": 6,
+    "fullname": "xyx",
+    "email": "xyx@gmail.com",
+    "username": "xyx",
+    "password": "xyx",
+    "createdAt": "2025-05-05T12:50:41.113Z"
   }
 ]
