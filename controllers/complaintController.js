@@ -1,16 +1,15 @@
 const Complaint = require('../models/ComplaintModel');
 
-// Render complaint form (GET request)
+// Render complaint form (GET)
 exports.getComplaintForm = (req, res) => {
     res.render('complaint_form');
 };
 
-// Handle complaint submission (POST request)
+// Handle complaint submission (POST)
 exports.postComplaint = async (req, res) => {
     const { username, pnr, description, issueDomain } = req.body;
 
     try {
-        // Create a new complaint object
         const complaint = new Complaint({
             username,
             pnr,
@@ -18,26 +17,21 @@ exports.postComplaint = async (req, res) => {
             issueDomain,
         });
 
-        // Save the complaint to the database
         await complaint.save();
-        // Redirect to the complaints page after submission
-        res.redirect('/complaint');
+        res.redirect(`/complaint?success=Complaint submitted successfully!&username=${username}`);
     } catch (error) {
         console.error('Error submitting complaint:', error);
-        // Render the complaint form with an error message
         res.render('complaint_form', { error: 'An error occurred while submitting the complaint.' });
     }
 };
 
-// Get complaint by ID (GET request)
+// Get a complaint by ID (GET)
 exports.getComplaintById = async (req, res) => {
     try {
-        // Find the complaint by its ID
         const complaint = await Complaint.findById(req.params.id);
         if (!complaint) {
             return res.status(404).send('Complaint not found');
         }
-        // Return the complaint as JSON response
         res.json(complaint);
     } catch (error) {
         console.error('Error getting complaint:', error);
@@ -45,12 +39,10 @@ exports.getComplaintById = async (req, res) => {
     }
 };
 
-// Get all complaints for a user (GET request)
+// Get all complaints by a specific user (GET)
 exports.getComplaintsByUser = async (req, res) => {
     try {
-        // Find all complaints by the username
         const complaints = await Complaint.find({ username: req.params.username });
-        // Return the list of complaints as JSON response
         res.json(complaints);
     } catch (error) {
         console.error('Error getting complaints by user:', error);
@@ -58,10 +50,9 @@ exports.getComplaintsByUser = async (req, res) => {
     }
 };
 
-// Resolve a complaint by ID (PUT request)
+// Mark a complaint as resolved (PUT)
 exports.resolveComplaint = async (req, res) => {
     try {
-        // Find the complaint by ID and update its status to 'Resolved'
         const complaint = await Complaint.findByIdAndUpdate(
             req.params.id,
             { status: 'Resolved', resolvedAt: Date.now() },
@@ -71,7 +62,7 @@ exports.resolveComplaint = async (req, res) => {
         if (!complaint) {
             return res.status(404).send('Complaint not found');
         }
-        // Return the updated complaint as a JSON response
+
         res.json(complaint);
     } catch (error) {
         console.error('Error resolving complaint:', error);
@@ -79,20 +70,18 @@ exports.resolveComplaint = async (req, res) => {
     }
 };
 
-// Get all complaints with pagination (GET request)
+// Get all complaints with pagination (GET)
 exports.getPaginatedComplaints = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const itemsPerPage = 5;
 
     try {
-        // Get the total number of complaints in the database
         const totalComplaints = await Complaint.countDocuments();
         const totalPages = Math.ceil(totalComplaints / itemsPerPage);
         const complaints = await Complaint.find()
             .skip((page - 1) * itemsPerPage)
             .limit(itemsPerPage);
 
-        // Return the paginated list of complaints
         res.render('staff_dashboard', {
             staffName: 'Railway Staff',
             complaints,
