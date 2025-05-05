@@ -1,44 +1,20 @@
-const sqlite3 = require('sqlite3').verbose();
+const mongoose = require('mongoose');
 
-const connectDB = () => {
-    const db = new sqlite3.Database(':memory:', (err) => {
-        if (err) {
-            console.error('Error opening database:', err.message);
-            return;
-        }
-        console.log('Connected to SQLite in-memory database.');
+const dbURI = 'mongodb+srv://ydmalve:G5jZ5XDKo3aKjIph@cluster0.8bita43.mongodb.net/RailMadad?retryWrites=true&w=majority'; 
 
-        // Create users table
-        db.run(
-            `CREATE TABLE IF NOT EXISTS users (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                username TEXT NOT NULL,
-                password TEXT NOT NULL
-            )`,
-            (err) => {
-                if (err) {
-                    console.error('Error creating table:', err.message);
-                    return;
-                }
-                console.log('Users table created.');
+const options = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+};
 
-                // Insert hardcoded admin users
-                db.run(
-                    `INSERT OR IGNORE INTO users (username, password) VALUES 
-                    ('admin1@gmail.com', 'adminpass123'), 
-                    ('admin2@gmail.com', 'secureAdmin456')`,
-                    (err) => {
-                        if (err) {
-                            console.error('Error inserting users:', err.message);
-                        } else {
-                            console.log('Admin users inserted.');
-                        }
-                    }
-                );
-            }
-        );
-    });
-    return db;
+const connectDB = async () => {
+  try {
+    await mongoose.connect(dbURI, options);
+    console.log("Successfully connected to MongoDB");
+  } catch (err) {
+    console.error("MongoDB connection error:", err);
+    process.exit(1);
+  }
 };
 
 module.exports = { connectDB };
