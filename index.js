@@ -5,6 +5,8 @@ const authRoutes = require('./routes/authRoutes');
 const complaintRoutes = require('./routes/complaintRoutes');
 const staffRoutes = require('./routes/staffRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const mongoose = require('mongoose');
+require('dotenv').config(); 
 
 const app = express();
 
@@ -15,7 +17,23 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 
 // Connect to SQLite
-connectDB();
+const dbURI = process.env.MONGO_URI || 'mongodb+srv://ydmalve:G5jZ5XDKo3aKjIph@cluster0.8bita43.mongodb.net/RailMadad?retryWrites=true&w=majority';
+
+// MongoDB connection options
+const options = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true,
+};
+
+// Connect to MongoDB
+mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => {
+    console.log("Successfully connected to MongoDB");
+  })
+  .catch((err) => {
+    console.error("MongoDB connection error:", err);
+  });
 
 // Routes
 app.use('/', authRoutes);

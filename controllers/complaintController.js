@@ -1,68 +1,62 @@
 const Complaint = require('../models/Complaint');
 
+// Render the complaint form
 exports.getComplaintForm = (req, res) => {
-    res.render('complaint', {
-        success: req.query.success,
-        error: req.query.error,
-        currentUser: req.query.username
-    });
+    const { username, success, error } = req.query;
+    res.render('complaint', { currentUser: username, success, error });
 };
 
+// Handle complaint submission
 exports.postComplaint = async (req, res) => {
+    const { username, pnr, description, issueDomain } = req.body;
+
+    if (!username || !pnr || !description || !issueDomain) {
+        return res.redirect(`/complaint?error=All fields are required.&username=${username}`);
+    }
+
     try {
-        const { username, pnr, description, issueDomain } = req.body;
-        if (!username || !pnr || !description || !issueDomain) {
-            return res.redirect('/complaint?error=true&message=All fields are required');
-        }
+        const newComplaint = new Complaint({
+            username,
+            pnr,
+            description,
+            issueDomain
+        });
 
-        const newComplaint = Complaint.create({ username, pnr, description, issueDomain });
-        res.redirect(`/complaint?success=true&username=${username}`);
-    } catch (error) {
-        console.error('Error submitting complaint:', error);
-        res.redirect('/complaint?error=true&message=Internal server error');
+        await newComplaint.save();
+        res.redirect(`/complaint?success=Complaint submitted successfully!&username=${username}`);
+    } catch (err) {
+        console.error('Error saving complaint:', err);
+        res.redirect(`/complaint?error=Something went wrong. Please try again.&username=${username}`);
     }
 };
 
-exports.getComplaintById = (req, res) => {
-    const complaint = Complaint.findById(req.params.id);
-    if (complaint) {
-        res.json(complaint);
-    } else {
-        res.status(404).json({ error: 'Complaint not found' });
-    }
-};
-
-exports.getComplaintsByUser = (req, res) => {
+// View all complaints (for admin or dashboard)
+exports.getAllComplaints = async (req, res) => {
     try {
-        const userComplaints = Complaint.findByUsername(req.params.username);
-        res.json(userComplaints);
-    } catch (error) {
-        console.error('Error fetching complaints:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        const complaints = await Complaint.find().sort({ createdAt: -1 });
+        res.render('admin-dashboard', { complaints });
+    } catch (err) {
+        console.error('Error fetching complaints:', err);
+        res.send('Error fetching complaints.');
     }
 };
 
+// Resolve a complaint
 exports.resolveComplaint = async (req, res) => {
-    try {
-        const { resolutionDetails, resolutionCategory } = req.body;
-        if (!resolutionDetails || !resolutionCategory) {
-            return res.status(400).json({ error: 'Missing resolution details or category' });
-        }
+    const { id } = req.params;
+    const { resolutionDetails, resolutionCategory } = req.body;
 
-        const updatedComplaint = Complaint.update(req.params.id, {
+    try {
+        await Complaint.findByIdAndUpdate(id, {
             status: 'Resolved',
             resolutionDetails,
             resolutionCategory,
-            resolvedAt: new Date().toISOString()
+            resolvedAt: new Date()
         });
 
-        if (!updatedComplaint) {
-            return res.status(404).json({ error: 'Complaint not found' });
-        }
-
-        res.json(updatedComplaint);
-    } catch (error) {
-        console.error('Error resolving complaint:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.redirect('/admin-dashboard');
+    } catch (err) {
+        console.error('Error resolving complaint:', err);
+        res.send('Error resolving complaint.');
     }
 };
