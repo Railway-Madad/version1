@@ -881,7 +881,7 @@
         <script>
             // Function to view complaint details
             function viewComplaint(complaintId) {
-                fetch(`/api/complaints/${complaintId}`)
+                fetch(`complaint/api/complaints/${complaintId}`)
                     .then(response => response.json())
                     .then(complaint => {
                         // Populate the modal with complaint details
@@ -944,7 +944,7 @@
                 }
                 
                 // Send the resolution data to the server
-                fetch(`/api/complaints/${complaintId}/resolve`, {
+                fetch(`complaint/api/complaints/${complaintId}/resolve`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
