@@ -9,11 +9,11 @@ exports.postRegister = async (req, res) => {
     const { fullname, email, username, password, confirmPassword } = req.body;
 
     if (!fullname || !email || !username || !password) {
-        return res.render('register', { registerError: 'All fields are required' });
+        return res.render('register', { registerError: 'All fields are required', registerSuccess: null });
     }
 
     if (password !== confirmPassword) {
-        return res.render('register', { registerError: 'Passwords do not match' });
+        return res.render('register', { registerError: 'Passwords do not match', registerSuccess: null });
     }
 
     try {
@@ -21,11 +21,11 @@ exports.postRegister = async (req, res) => {
         const existingUserByEmail = await User.findOne({ email });
 
         if (existingUserByUsername) {
-            return res.render('register', { registerError: 'Username already taken' });
+            return res.render('register', { registerError: 'Username already taken', registerSuccess: null });
         }
 
         if (existingUserByEmail) {
-            return res.render('register', { registerError: 'Email already registered' });
+            return res.render('register', { registerError: 'Email already registered', registerSuccess: null });
         }
 
         const salt = await bcrypt.genSalt(10);
@@ -40,12 +40,14 @@ exports.postRegister = async (req, res) => {
 
         await newUser.save();
 
-        res.redirect(`/`);
+        // Pass success flag to view
+        return res.render('register', { registerError: null, registerSuccess: true });
     } catch (error) {
         console.error('Registration error:', error);
-        res.render('register', { registerError: 'An error occurred during registration' });
+        res.render('register', { registerError: 'An error occurred during registration', registerSuccess: null });
     }
 };
+
 
 exports.postLogin = async (req, res) => {
     const { username, password } = req.body;

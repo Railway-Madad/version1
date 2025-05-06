@@ -245,5 +245,12 @@
             </div>
         </div>
     </footer>
+    <script>
+        <% if (locals.registerSuccess) { %>
+            alert("Registration successful!");
+            window.location.href = "/";
+        <% } %>
+    </script>
+    
 </body>
 </html>
