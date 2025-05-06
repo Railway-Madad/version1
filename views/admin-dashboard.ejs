@@ -188,6 +188,14 @@
       font-size: 0.9rem;
     }
 
+    #complaintStatusChart {
+  max-width: 250px;
+  max-height: 250px;
+  width: 100%; /* Ensure it is responsive */
+  height: auto; /* Keep the aspect ratio intact */
+}
+
+
     @media (max-width: 768px) {
       .stats-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -205,6 +213,8 @@
     }
   </style>
 </head>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <body>
 
   <nav class="navbar">
@@ -227,6 +237,12 @@
   <div class="dashboard">
     <div class="dashboard-card">
       <h2 class="card-title">Statistics</h2>
+
+      <div class="dashboard-card">
+        <h2 class="card-title">Complaint Status Distribution</h2>
+        <canvas id="complaintStatusChart"></canvas>
+      </div>
+      
       <div class="stats-grid">
         <div class="stat-card">
           <div class="number"><%= totalComplaints %></div>
@@ -291,4 +307,34 @@
   </footer>
 
 </body>
+<script>
+  const ctx = document.getElementById('complaintStatusChart').getContext('2d');
+
+  const complaintChart = new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels: ['Pending', 'Resolved'],
+      datasets: [{
+        label: 'Complaint Status',
+        data: [<%= pendingComplaints %>, <%= resolvedComplaints %>],
+        backgroundColor: ['#ffc107', '#28a745'],
+        borderColor: ['#fff', '#fff'],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'bottom'
+        },
+        title: {
+          display: true,
+          text: 'Complaints by Status'
+        }
+      }
+    }
+  });
+</script>
+
 </html>
