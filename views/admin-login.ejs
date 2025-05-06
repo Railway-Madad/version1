@@ -1,230 +1,230 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login - Rail Madad</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <style>
-        /* Navigation */
-        .navbar {
-            background-color: #fff;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            padding: 15px 0;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-        
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        .nav-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-            font-size: 1.6rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            text-decoration: none;
-        }
-        
-        .logo i {
-            margin-right: 10px;
-            color: var(--secondary-color);
-        }
-        
-        .login-container {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 40px 20px;
-        }
-        
-        .login-card {
-            width: 100%;
-            max-width: 400px;
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: var(--card-shadow);
-            padding: 35px;
-        }
-        
-        .login-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .login-header h3 {
-            color: var(--primary-color);
-            font-size: 1.8rem;
-            margin-bottom: 10px;
-            position: relative;
-            padding-bottom: 15px;
-        }
-        
-        .login-header h3::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 3px;
-            background-color: var(--secondary-color);
-        }
-        
-        .login-header p {
-            color: #666;
-            font-size: 1rem;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: #444;
-        }
-        
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            transition: var(--transition);
-            font-size: 1rem;
-        }
-        
-        .form-group input:focus, .form-group select:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(26, 95, 180, 0.1);
-            outline: none;
-        }
-        
-        .btn {
-            display: inline-block;
-            padding: 12px 28px;
-            background-color: var(--secondary-color);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            text-align: center;
-            width: 100%;
-            font-size: 1rem;
-        }
-        
-        .btn:hover {
-            background-color: #e55a00;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(229, 90, 0, 0.2);
-        }
-        
-        .btn-primary {
-            background-color: var(--primary-color);
-        }
-        
-        .btn-primary:hover {
-            background-color: #1251a0;
-            box-shadow: 0 6px 12px rgba(26, 95, 180, 0.2);
-        }
-        
-        .error-message {
-            color: #e74c3c;
-            background-color: #fdf1f0;
-            border-left: 4px solid #e74c3c;
-            padding: 12px 15px;
-            margin-top: 20px;
-            border-radius: 4px;
-            font-size: 0.9rem;
-        }
-    
-        
-        /* Responsive Design */
-        @media (max-width: 576px) {
-            .login-card {
-                padding: 25px 20px;
-            }
-            
-            .login-header h3 {
-                font-size: 1.5rem;
-            }
-        }
-    </style>
-     <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Login - Rail Madad</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <style>
+    :root {
+      --primary-color: #1a73e8;
+      --secondary-color: #f57c00;
+      --card-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+      --transition: 0.3s ease-in-out;
+    }
+
+    .navbar {
+      background-color: #fff;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      padding: 15px 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      text-decoration: none;
+    }
+
+    .logo i {
+      margin-right: 10px;
+      color: var(--secondary-color);
+    }
+
+    .login-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 100px);
+      padding: 40px 20px;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 400px;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: var(--card-shadow);
+      padding: 35px;
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .login-header h3 {
+      color: var(--primary-color);
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+      position: relative;
+      padding-bottom: 15px;
+    }
+
+    .login-header h3::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 3px;
+      background-color: var(--secondary-color);
+    }
+
+    .login-header p {
+      color: #666;
+      font-size: 1rem;
+    }
+
+    form .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #444;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(26, 95, 180, 0.1);
+      outline: none;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 28px;
+      background-color: var(--secondary-color);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      text-align: center;
+      width: 100%;
+      font-size: 1rem;
+    }
+
+    .btn:hover {
+      background-color: #e55a00;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(229, 90, 0, 0.2);
+    }
+
+    .error-message {
+      margin-top: 20px;
+      background-color: #fdf1f0;
+      color: #e74c3c;
+      border-left: 4px solid #e74c3c;
+      padding: 12px 15px;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+
+    footer {
+      padding: 20px 0;
+      background-color: #f8f8f8;
+      text-align: center;
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 576px) {
+      .login-card {
+        padding: 25px 20px;
+      }
+
+      .login-header h3 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="container nav-container">
-            <a href="/" class="logo">
-                <i class="fas fa-train"></i>
-                Rail Madad
-            </a>
-        </div>
-    </nav>
 
-    <div class="login-container">
-        <div class="login-card">
-            <div class="login-header">
-                <h3>Admin Login</h3>
-                <p>Access the Railway Management System</p>
-            </div>
-            
-            <form action="/admin-login" method="POST">
-                <div class="form-group">
-                    <label for="domain">Select Domain:</label>
-                    <select id="domain" name="domain" required>
-                        <option value="admin">Admin</option>
-                        <option value="staff">Staff</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="username">Email Address</label>
-                    <input type="email" id="username" name="username" placeholder="Enter email" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" placeholder="Enter password" required>
-                </div>
-                
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-sign-in-alt"></i> Login
-                </button>
-                
-                <% if (locals.loginError) { %>
-                <div class="error-message">
-                    <i class="fas fa-exclamation-circle"></i> <%= loginError %>
-                </div>
-                <% } %>
-            </form>
-        </div>
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="/" class="logo">
+        <i class="fas fa-train"></i> Rail Madad
+      </a>
     </div>
-    
-    <footer>
-        <div class="container">
-            <div class="copyright">
-                <p>&copy; <%= new Date().getFullYear() %> Rail Madad - Indian Railways. All Rights Reserved.</p>
-            </div>
+  </nav>
+
+  <div class="login-container">
+    <div class="login-card">
+      <div class="login-header">
+        <h3>Admin Login</h3>
+        <p>Access the Railway Management System</p>
+      </div>
+
+      <form action="/admin/admin-login" method="POST">
+        <div class="form-group">
+          <label for="domain">Select Role</label>
+          <select name="domain" id="domain" required>
+            <option value="admin">Admin</option>
+            <option value="staff">Staff</option>
+          </select>
         </div>
-    </footer>
+
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" name="username" id="username" placeholder="Enter username" required />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" name="password" id="password" placeholder="Enter password" required />
+        </div>
+
+        <button type="submit" class="btn">Login</button>
+
+        <% if (loginError) { %>
+          <div class="error-message"><%= loginError %></div>
+        <% } %>
+      </form>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <p>&copy; <%= new Date().getFullYear() %> Rail Madad - Indian Railways. All Rights Reserved.</p>
+    </div>
+  </footer>
+
 </body>
 </html>
