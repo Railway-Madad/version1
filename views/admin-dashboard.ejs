@@ -50,6 +50,11 @@
       color: var(--secondary-color);
     }
 
+    .nav-right {
+      display: flex;
+      gap: 15px;
+    }
+
     .nav-right .btn {
       padding: 10px 20px;
       background-color: var(--secondary-color);
@@ -189,16 +194,160 @@
     }
 
     #complaintStatusChart {
-  max-width: 250px;
-  max-height: 250px;
-  width: 100%; /* Ensure it is responsive */
-  height: auto; /* Keep the aspect ratio intact */
-}
+      max-width: 250px;
+      max-height: 250px;
+      width: 100%; /* Ensure it is responsive */
+      height: auto; /* Keep the aspect ratio intact */
+    }
 
+    .admin-actions {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .admin-btn {
+      padding: 15px 25px;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: var(--transition);
+      box-shadow: var(--card-shadow);
+    }
+
+    .admin-btn:hover {
+      background-color: #0d5bbc;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(26, 115, 232, 0.2);
+    }
+
+    .admin-btn i {
+      font-size: 1.2rem;
+    }
+    
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1050;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+      background-color: #fff;
+      margin: 5% auto;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      width: 90%;
+      max-width: 600px;
+      position: relative;
+      animation: modalAppear 0.3s ease-out;
+    }
+
+    @keyframes modalAppear {
+      from {
+        opacity: 0;
+        transform: translateY(-50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      font-size: 24px;
+      cursor: pointer;
+      color: #777;
+      transition: var(--transition);
+    }
+
+    .close-modal:hover {
+      color: #333;
+    }
+
+    .modal-header {
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--secondary-color);
+    }
+
+    .modal-header h2 {
+      color: var(--primary-color);
+      margin: 0;
+    }
+
+    .modal-form label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #444;
+    }
+
+    .modal-form input,
+    .modal-form textarea,
+    .modal-form select {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 20px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-family: inherit;
+      font-size: 16px;
+    }
+
+    .modal-form textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    .modal-form button {
+      background-color: var(--secondary-color);
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .modal-form button:hover {
+      background-color: #e55a00;
+    }
 
     @media (max-width: 768px) {
       .stats-grid {
         grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .admin-actions {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .admin-btn {
+        width: 100%;
+        max-width: 300px;
       }
     }
 
@@ -235,6 +384,16 @@
   </div>
 
   <div class="dashboard">
+    <!-- New Admin Action Buttons -->
+    <div class="admin-actions">
+      <button class="admin-btn" onclick="openNewsModal()">
+        <i class="fas fa-newspaper"></i> Publish News
+      </button>
+      <button class="admin-btn" onclick="openStaffModal()">
+        <i class="fas fa-user-plus"></i> Register New Staff
+      </button>
+    </div>
+
     <div class="dashboard-card">
       <h2 class="card-title">Statistics</h2>
 
@@ -306,6 +465,81 @@
     </div>
   </footer>
 
+  <!-- Publish News Modal -->
+  <div id="newsModal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal" onclick="closeNewsModal()">&times;</span>
+      <div class="modal-header">
+        <h2><i class="fas fa-newspaper"></i> Publish News</h2>
+      </div>
+      <form class="modal-form" id="publishNewsForm">
+        <div>
+          <label for="newsTitle">News Title</label>
+          <input type="text" id="newsTitle" name="title" required placeholder="Enter news title">
+        </div>
+        <div>
+          <label for="newsContent">News Content</label>
+          <textarea id="newsContent" name="content" required placeholder="Enter news content"></textarea>
+        </div>
+        <div>
+          <label for="newsCategory">Category</label>
+          <select id="newsCategory" name="category">
+            <option value="announcement">Announcement</option>
+            <option value="update">Update</option>
+            <option value="alert">Alert</option>
+            <option value="general">General</option>
+          </select>
+        </div>
+        <div>
+          <label for="publishDate">Publish Date</label>
+          <input type="date" id="publishDate" name="publishDate" required>
+        </div>
+        <button type="submit">Publish News</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Register Staff Modal -->
+  <div id="staffModal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal" onclick="closeStaffModal()">&times;</span>
+      <div class="modal-header">
+        <h2><i class="fas fa-user-plus"></i> Register New Staff</h2>
+      </div>
+      <form class="modal-form" id="registerStaffForm">
+        <div>
+          <label for="staffName">Full Name</label>
+          <input type="text" id="staffName" name="name" required placeholder="Enter full name">
+        </div>
+        <div>
+          <label for="staffEmail">Email Address</label>
+          <input type="email" id="staffEmail" name="email" required placeholder="Enter email address">
+        </div>
+        <div>
+          <label for="staffUsername">Username</label>
+          <input type="text" id="staffUsername" name="username" required placeholder="Enter username">
+        </div>
+        <div>
+          <label for="staffPassword">Password</label>
+          <input type="password" id="staffPassword" name="password" required placeholder="Enter password">
+        </div>
+        <div>
+          <label for="staffRole">Role</label>
+          <select id="staffRole" name="role">
+            <option value="admin">Administrator</option>
+            <option value="moderator">Moderator</option>
+            <option value="support">Support Staff</option>
+          </select>
+        </div>
+        <div>
+          <label for="staffStation">Station/Office</label>
+          <input type="text" id="staffStation" name="station" placeholder="Enter station or office">
+        </div>
+        <button type="submit">Register Staff</button>
+      </form>
+    </div>
+  </div>
+
 </body>
 <script>
   const ctx = document.getElementById('complaintStatusChart').getContext('2d');
@@ -334,6 +568,82 @@
         }
       }
     }
+  });
+
+  // Modal functionality
+  function openNewsModal() {
+    document.getElementById('newsModal').style.display = 'block';
+    // Set today's date as default
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('publishDate').value = today;
+  }
+
+  function closeNewsModal() {
+    document.getElementById('newsModal').style.display = 'none';
+  }
+
+  function openStaffModal() {
+    document.getElementById('staffModal').style.display = 'block';
+  }
+
+  function closeStaffModal() {
+    document.getElementById('staffModal').style.display = 'none';
+  }
+
+  // Close modals when clicking outside
+  window.onclick = function(event) {
+    const newsModal = document.getElementById('newsModal');
+    const staffModal = document.getElementById('staffModal');
+    
+    if (event.target === newsModal) {
+      closeNewsModal();
+    }
+    if (event.target === staffModal) {
+      closeStaffModal();
+    }
+  }
+
+  // Form submission handling
+  document.getElementById('publishNewsForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Get form data
+    const formData = {
+      title: document.getElementById('newsTitle').value,
+      content: document.getElementById('newsContent').value,
+      category: document.getElementById('newsCategory').value,
+      publishDate: document.getElementById('publishDate').value
+    };
+    
+    // Here you would normally send this data to your server
+    // For demonstration, we'll just show an alert
+    alert('News published successfully!\n\nTitle: ' + formData.title);
+    
+    // Close the modal and reset form
+    this.reset();
+    closeNewsModal();
+  });
+
+  document.getElementById('registerStaffForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Get form data
+    const formData = {
+      name: document.getElementById('staffName').value,
+      email: document.getElementById('staffEmail').value,
+      username: document.getElementById('staffUsername').value,
+      password: document.getElementById('staffPassword').value,
+      role: document.getElementById('staffRole').value,
+      station: document.getElementById('staffStation').value
+    };
+    
+    // Here you would normally send this data to your server
+    // For demonstration, we'll just show an alert
+    alert('Staff member registered successfully!\n\nName: ' + formData.name + '\nRole: ' + formData.role);
+    
+    // Close the modal and reset form
+    this.reset();
+    closeStaffModal();
   });
 </script>
 
