@@ -42,7 +42,7 @@ exports.postAdminLogin = async (req, res) => {
         if (domain === 'staff') {
             const staff = await Staff.findOne({ username });
             if (staff && await staff.comparePassword(password)) {
-                return res.redirect('/staff-dashboard');
+                return res.redirect(`/staff-dashboard?username=${staff.username}`);
             }
 
             return res.render('admin-login', { loginError: 'Invalid username or password.' });
