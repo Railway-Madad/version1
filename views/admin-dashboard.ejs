@@ -506,15 +506,7 @@
       <div class="modal-header">
         <h2><i class="fas fa-user-plus"></i> Register New Staff</h2>
       </div>
-      <form class="modal-form" id="registerStaffForm">
-        <div>
-          <label for="staffName">Full Name</label>
-          <input type="text" id="staffName" name="name" required placeholder="Enter full name">
-        </div>
-        <div>
-          <label for="staffEmail">Email Address</label>
-          <input type="email" id="staffEmail" name="email" required placeholder="Enter email address">
-        </div>
+      <form class="modal-form" id="registerStaffForm" action="/admin/register-staff" method="POST">
         <div>
           <label for="staffUsername">Username</label>
           <input type="text" id="staffUsername" name="username" required placeholder="Enter username">
@@ -524,19 +516,19 @@
           <input type="password" id="staffPassword" name="password" required placeholder="Enter password">
         </div>
         <div>
-          <label for="staffRole">Role</label>
-          <select id="staffRole" name="role">
-            <option value="admin">Administrator</option>
-            <option value="moderator">Moderator</option>
-            <option value="support">Support Staff</option>
+          <label for="staffDomain">Domain</label>
+          <select id="staffDomain" name="domain" required>
+            <option value="">Select domain</option>
+            <option value="admin">Admin</option>
+            <option value="ticketing">Ticketing</option>
+            <option value="cleaning">Cleaning</option>
+            <option value="security">Security</option>
+            <option value="maintenance">Maintenance</option>
           </select>
-        </div>
-        <div>
-          <label for="staffStation">Station/Office</label>
-          <input type="text" id="staffStation" name="station" placeholder="Enter station or office">
         </div>
         <button type="submit">Register Staff</button>
       </form>
+      
     </div>
   </div>
 
@@ -604,47 +596,8 @@
   }
 
   // Form submission handling
-  document.getElementById('publishNewsForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    // Get form data
-    const formData = {
-      title: document.getElementById('newsTitle').value,
-      content: document.getElementById('newsContent').value,
-      category: document.getElementById('newsCategory').value,
-      publishDate: document.getElementById('publishDate').value
-    };
-    
-    // Here you would normally send this data to your server
-    // For demonstration, we'll just show an alert
-    alert('News published successfully!\n\nTitle: ' + formData.title);
-    
-    // Close the modal and reset form
-    this.reset();
-    closeNewsModal();
-  });
+  
 
-  document.getElementById('registerStaffForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    // Get form data
-    const formData = {
-      name: document.getElementById('staffName').value,
-      email: document.getElementById('staffEmail').value,
-      username: document.getElementById('staffUsername').value,
-      password: document.getElementById('staffPassword').value,
-      role: document.getElementById('staffRole').value,
-      station: document.getElementById('staffStation').value
-    };
-    
-    // Here you would normally send this data to your server
-    // For demonstration, we'll just show an alert
-    alert('Staff member registered successfully!\n\nName: ' + formData.name + '\nRole: ' + formData.role);
-    
-    // Close the modal and reset form
-    this.reset();
-    closeStaffModal();
-  });
 </script>
 
 </html>

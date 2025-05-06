@@ -54,3 +54,45 @@ exports.postAdminLogin = async (req, res) => {
         res.render('admin-login', { loginError: 'Internal server error.' });
     }
 };
+
+exports.registerStaff = async (req, res) => {
+    try {
+      const { username, password, domain } = req.body;
+  
+      if (!username || !password || !domain) {
+        return res.status(400).send('All fields are required.');
+      }
+  
+      const existingStaff = await Staff.findOne({ username });
+      if (existingStaff) {
+        return res.status(409).send('Username already exists.');
+      }
+  
+      const newStaff = new Staff({ username, password, domain });
+      await newStaff.save();
+  
+      // Reload admin dashboard with updated data
+      const complaints = await Complaint.find().sort({ createdAt: -1 });
+      const users = await User.find();
+      const admin = await Admin.findOne(); // optionally filter by session/admin
+  
+      const totalComplaints = complaints.length;
+      const pendingComplaints = complaints.filter(c => c.status === 'Pending').length;
+      const resolvedComplaints = complaints.filter(c => c.status === 'Resolved').length;
+      const totalUsers = users.length;
+  
+      res.render('admin-dashboard', {
+        totalComplaints,
+        pendingComplaints,
+        resolvedComplaints,
+        totalUsers,
+        complaints: complaints.slice(0, 5),
+        adminDetails: admin
+      });
+  
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Internal server error.');
+    }
+  };
+  
