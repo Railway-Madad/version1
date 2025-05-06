@@ -285,6 +285,7 @@
       color: #333;
     }
 
+
     .modal-header {
       margin-bottom: 20px;
       padding-bottom: 10px;
@@ -404,19 +405,19 @@
       
       <div class="stats-grid">
         <div class="stat-card">
-          <div class="number"><%= totalComplaints %></div>
+          <div class="number" id="total-complaints"><%= totalComplaints %></div>
           <div class="label">Total Complaints</div>
         </div>
         <div class="stat-card pending">
-          <div class="number"><%= pendingComplaints %></div>
+          <div class="number" id="pending-complaints"><%= pendingComplaints %></div>
           <div class="label">Pending Complaints</div>
         </div>
         <div class="stat-card resolved">
-          <div class="number"><%= resolvedComplaints %></div>
+          <div class="number" id="resolved-complaints"><%= resolvedComplaints %></div>
           <div class="label">Resolved Complaints</div>
         </div>
         <div class="stat-card">
-          <div class="number"><%= totalUsers %></div>
+          <div class="number" id="total-users"><%= totalUsers %></div>
           <div class="label">Total Users</div>
         </div>
       </div>
@@ -461,14 +462,16 @@
 
   <footer>
     <div class="container">
-      <p>&copy; <%= new Date().getFullYear() %> Rail Madad - Indian Railways. All Rights Reserved.</p>
+      <p>© <%= new Date().getFullYear() %> Rail Madad - Indian Railways. All Rights Reserved.</p>
     </div>
   </footer>
 
   <!-- Publish News Modal -->
   <div id="newsModal" class="modal">
     <div class="modal-content">
-      <span class="close-modal" onclick="closeNewsModal()">&times;</span>
+
+      <span class="close-modal" onclick="closeNewsModal()">×</span>
+
       <div class="modal-header">
         <h2><i class="fas fa-newspaper"></i> Publish News</h2>
       </div>
@@ -502,7 +505,9 @@
   <!-- Register Staff Modal -->
   <div id="staffModal" class="modal">
     <div class="modal-content">
-      <span class="close-modal" onclick="closeStaffModal()">&times;</span>
+
+      <span class="close-modal" onclick="closeStaffModal()">×</span>
+
       <div class="modal-header">
         <h2><i class="fas fa-user-plus"></i> Register New Staff</h2>
       </div>
@@ -542,6 +547,50 @@
 
 </body>
 <script>
+  // Real-time update logic for pie chart and integer fields
+  function updateComplaints() {
+    fetch('/complaints/all')
+      .then(async response => {
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Failed to fetch complaints: ${response.status} - ${errorText}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Fetched complaints:', data); // Debug log
+        const complaints = data.complaints || [];
+
+        // Update statistics
+        const totalComplaints = complaints.length;
+        const pendingComplaints = complaints.filter(c => c.status === 'pending').length;
+        const resolvedComplaints = complaints.filter(c => c.status === 'resolved').length;
+
+        document.getElementById('total-complaints').textContent = totalComplaints;
+        document.getElementById('pending-complaints').textContent = pendingComplaints;
+        document.getElementById('resolved-complaints').textContent = resolvedComplaints;
+
+        // Update pie chart
+        complaintChart.data.datasets[0].data = [pendingComplaints, resolvedComplaints];
+        complaintChart.update();
+      })
+      .catch(error => {
+        console.error('Error updating complaints:', error);
+      });
+  }
+
+  // Initial fetch
+  updateComplaints();
+
+  // Set interval for real-time updates every 2000ms
+  const updateInterval = setInterval(updateComplaints, 2000);
+
+  // Clean up interval on page unload
+  window.addEventListener('unload', () => {
+    clearInterval(updateInterval);
+  });
+
+  // Original script (unchanged)
   const ctx = document.getElementById('complaintStatusChart').getContext('2d');
 
   const complaintChart = new Chart(ctx, {
