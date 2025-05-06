@@ -1,4 +1,6 @@
+const {cloudinary} = require('../config/cloudinary');
 const Complaint = require('../models/ComplaintModel');
+const fs = require('fs').promises;
 
 // GET /complaint - Render the complaint form
 exports.getComplaintForm = (req, res) => {
@@ -10,23 +12,69 @@ exports.getComplaintForm = (req, res) => {
     });
 };
 
-// POST /complaint - Handle complaint submission
+// pOST /complaint/submit-complaint 
 exports.postComplaint = async (req, res) => {
     try {
         const { username, pnr, description, issueDomain } = req.body;
+        const file = req.file;
+
+        if (!username || !pnr || !description || !issueDomain) {
+            if (file) await fs.unlink(file.path).catch(err => console.error('Error deleting temp file:', err));
+            return res.redirect('/complaint?error=true&message=All fields are required');
+        }
+
+        let linkurl = null;
+        if (file) {
+            if (!cloudinary || !cloudinary.uploader) {
+                await fs.unlink(file.path).catch(err => console.error('Error deleting temp file:', err));
+                throw new Error('Cloudinary is not initialized');
+            }
+            // verify file exists
+            try {
+                await fs.access(file.path);
+                console.log('Uploading file:', file.path);
+            } catch (err) {
+                await fs.unlink(file.path).catch(e => console.error('Error deleting temp file:', e));
+                throw new Error(`File not found: ${file.path}`);
+            }
+            try {
+                const uploadResult = await cloudinary.uploader.upload(file.path, {
+                    folder: 'railmadad/complaints',
+                    public_id: `complaint_${Date.now()}`,
+                    resource_type: 'image'
+                });
+                linkurl = uploadResult.secure_url;
+                console.log('Cloudinary upload successful:', linkurl);
+                await fs.unlink(file.path).catch(err => console.error('Error deleting temp file:', err));
+            } catch (uploadError) {
+                await fs.unlink(file.path).catch(err => console.error('Error deleting temp file:', err));
+                console.error('Cloudinary upload error:', {
+                    message: uploadError.message,
+                    http_code: uploadError.http_code,
+                    stack: uploadError.stack
+                });
+                throw new Error(`Failed to upload image to Cloudinary: ${uploadError.message}`);
+            }
+        }
 
         const complaint = new Complaint({
             username,
             pnr,
             description,
-            issueDomain
+            issueDomain,
+            linkurl,
+            status: 'Pending'
         });
 
         await complaint.save();
         res.redirect('/complaint?success=true');
     } catch (error) {
-        console.error('Error submitting complaint:', error);
-        res.redirect('/complaint?error=true');
+        console.error('Error submitting complaint:', {
+            message: error.message,
+            stack: error.stack
+        });
+        if (req.file) await fs.unlink(req.file.path).catch(err => console.error('Error deleting temp file:', err));
+        res.redirect(`/complaint?error=true&message=${encodeURIComponent(error.message)}`);
     }
 };
 
@@ -63,7 +111,8 @@ exports.resolveComplaint = async (req, res) => {
             {
                 status: 'Resolved',
                 resolvedAt: Date.now(),
-                resolutionDetails: req.body.resolutionDetails || ''
+                resolutionDetails: req.body.resolutionDetails || '',
+                resolutionCategory: req.body.resolutionCategory || ''
             },
             { new: true }
         );
@@ -106,5 +155,89 @@ exports.getPaginatedComplaints = async (req, res) => {
             currentPage: 1,
             totalPages: 1
         });
+    }
+};
+
+// GET /complaint/upload-image - Render image upload form
+exports.getUploadForm = (req, res) => {
+    const currentUser = req.session?.user?.username || null;
+    res.render('upload-image', {
+        currentUser,
+        success: req.query.success || false,
+        error: req.query.error || false
+    });
+};
+
+// POST /complaint/upload-image - Handle standalone image upload
+exports.postImage = async (req, res) => {
+    try {
+        const { username } = req.body;
+        const file = req.file;
+
+        if (!username || !file) {
+            if (file) await fs.unlink(file.path).catch(err => console.error('Error deleting temp file:', err));
+            return res.redirect('/complaint/upload-image?error=true&message=Missing username or image');
+        }
+
+        if (!cloudinary || !cloudinary.uploader) {
+            await fs.unlink(file.path).catch(err => console.error('Error deleting temp file:', err));
+            throw new Error('Cloudinary is not initialized');
+        }
+
+        let linkurl;
+        try {
+            // Verify file exists
+            await fs.access(file.path);
+            console.log('Uploading file:', file.path);
+            const uploadResult = await cloudinary.uploader.upload(file.path, {
+                folder: 'railmadad/complaints',
+                public_id: `complaint_image_${Date.now()}`,
+                resource_type: 'image'
+            });
+            linkurl = uploadResult.secure_url;
+            console.log('Cloudinary upload successful:', linkurl);
+            await fs.unlink(file.path).catch(err => console.error('Error deleting temp file:', err));
+        } catch (uploadError) {
+            await fs.unlink(file.path).catch(err => console.error('Error deleting temp file:', err));
+            console.error('Cloudinary upload error:', {
+                message: uploadError.message,
+                http_code: uploadError.http_code,
+                stack: uploadError.stack
+            });
+            throw new Error(`Failed to upload image to Cloudinary: ${uploadError.message}`);
+        }
+
+        const complaint = new Complaint({
+            username,
+            pnr: 'N/A',
+            description: 'Image-only complaint',
+            issueDomain: 'Other',
+            linkurl,
+            status: 'Pending'
+        });
+        await complaint.save();
+
+        res.redirect('/complaint/upload-image?success=true');
+    } catch (error) {
+        console.error('Error uploading image:', {
+            message: error.message,
+            stack: error.stack
+        });
+        if (req.file) await fs.unlink(req.file.path).catch(err => console.error('Error deleting temp file:', err));
+        res.redirect(`/complaint/upload-image?error=true&message=${encodeURIComponent(error.message)}`);
+    }
+};
+
+// GET /complaint/api/images/user/:username - Get complaints with images by username
+exports.getImagesByUser = async (req, res) => {
+    try {
+        const complaints = await Complaint.find({ 
+            username: req.params.username,
+            linkurl: { $ne: null }
+        });
+        res.json(complaints);
+    } catch (error) {
+        console.error('Error fetching images:', error);
+        res.status(500).json({ error: 'Server error' });
     }
 };
