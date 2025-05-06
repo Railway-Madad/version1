@@ -92,6 +92,53 @@ exports.getComplaintById = async (req, res) => {
     }
 };
 
+// DELETE /complaint/:id - Delete a complaint
+exports.deleteComplaint = async (req, res) => {
+    try {
+        const complaint = await Complaint.findById(req.params.id);
+        if (!complaint) {
+            return res.status(404).json({ error: 'Complaint not found' });
+        }
+
+        // Ensure only the owner can delete
+        const currentUser = req.session?.user?.username;
+        if (!currentUser || complaint.username !== currentUser) {
+            return res.status(403).json({ error: 'Unauthorized to delete this complaint' });
+        }
+
+        await Complaint.deleteOne({ _id: req.params.id });
+        res.status(200).json({ message: 'Complaint deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting complaint:', error);
+        res.status(500).json({ error: 'Server error' });
+    }
+};
+
+// PUT /complaint/resolve/:id - Resolve a complaint
+exports.resolveComplaint = async (req, res) => {
+    try {
+        const complaint = await Complaint.findByIdAndUpdate(
+            req.params.id,
+            {
+                status: 'Resolved',
+                resolvedAt: Date.now(),
+                resolutionDetails: req.body.resolutionDetails || '',
+                resolutionCategory: req.body.resolutionCategory || ''
+            },
+            { new: true }
+        );
+
+        if (!complaint) {
+            return res.status(404).json({ error: 'Complaint not found' });
+        }
+
+        res.json(complaint);
+    } catch (error) {
+        console.error('Error resolving complaint:', error);
+        res.status(500).json({ error: 'Server error' });
+    }
+};
+
 // GET /complaints/user/:username - Get all complaints by username
 exports.getComplaintsByUser = async (req, res) => {
     try {
