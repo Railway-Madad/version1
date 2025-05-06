@@ -40,7 +40,7 @@ exports.postRegister = async (req, res) => {
 
         await newUser.save();
 
-        res.redirect(`/complaint?success=Registration successful! Welcome, ${username}&username=${username}`);
+        res.redirect(`/`);
     } catch (error) {
         console.error('Registration error:', error);
         res.render('register', { registerError: 'An error occurred during registration' });
