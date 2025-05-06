@@ -15,6 +15,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 connectDB();
 
+//dont have route of user 
 app.use('/', authRoutes);
 app.use('/complaint', complaintRoutes);
 app.use('/staff-dashboard', staffRoutes);
