@@ -34,6 +34,8 @@ router.get('/api/complaints/user/:username', complaintController.getComplaintsBy
 router.put('/api/complaints/:id/resolve', complaintController.resolveComplaint);
 router.delete('/api/complaints/:id', complaintController.deleteComplaint);
 router.get('/upload-image', complaintController.getUploadForm);
+router.get('/complaints', complaintController.getPaginatedComplaints);
+router.get('/complaints/all', complaintController.getAllComplaints);
 router.post('/upload-image', upload.single('image'), complaintController.postImage);
 router.get('/api/images/user/:username', complaintController.getImagesByUser);
 

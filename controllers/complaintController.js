@@ -78,6 +78,47 @@ exports.postComplaint = async (req, res) => {
     }
 };
 
+//get all get requests
+exports.getPaginatedComplaints = async (req, res) => {
+    const page = parseInt(req.query.page) || 1;
+    const itemsPerPage = 5;
+    try {
+        const totalComplaints = await Complaint.countDocuments();
+        const totalPages = Math.ceil(totalComplaints / itemsPerPage);
+        const complaints = await Complaint.find()
+            .skip((page - 1) * itemsPerPage)
+            .limit(itemsPerPage);
+        res.json({
+            staffName: 'Railway Staff',
+            complaints,
+            currentPage: page,
+            totalPages
+        });
+    } catch (error) {
+        console.error('Error loading paginated complaints:', error);
+        res.status(500).json({
+            staffName: 'Railway Staff',
+            complaints: [],
+            currentPage: 1,
+            totalPages: 1,
+            error: 'Server error'
+        });
+    }
+};
+
+//get all 
+// GET /complaints/all - Get all complaints
+exports.getAllComplaints = async (req, res) => {
+    try {
+        const complaints = await Complaint.find().sort({ createdAt: -1 });
+        console.log('Fetched all complaints:', complaints.length); // Debug log
+        res.json({ complaints });
+    } catch (error) {
+        console.error('Error fetching all complaints:', error);
+        res.status(500).json({ complaints: [], error: error.message });
+    }
+};
+
 // GET /complaint/:id - Get complaint by ID
 exports.getComplaintById = async (req, res) => {
     try {
