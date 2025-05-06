@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+
+
 const dbURI = 'mongodb+srv://ydmalve:G5jZ5XDKo3aKjIph@cluster0.8bita43.mongodb.net/RailMadad?retryWrites=true&w=majority'; 
 
 const options = {
