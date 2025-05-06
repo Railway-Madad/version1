@@ -10,4 +10,5 @@ router.get('/about', authController.getAbout);
 router.get('/faq', authController.getFAQ);
 router.get('/feedback', authController.getFeedback);
 
+
 module.exports = router;

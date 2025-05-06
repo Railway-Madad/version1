@@ -43,3 +43,56 @@ exports.getStaffDashboard = async (req, res) => {
         return res.render('staff_dashboard', { error: 'An error occurred while loading the dashboard.' });
     }
 };
+
+// Get a single complaint by ID
+exports.getComplaintById = async (req, res) => {
+    try {
+        const complaint = await Complaint.findById(req.params.id);
+        
+        if (!complaint) {
+            return res.status(404).json({ success: false, message: 'Complaint not found' });
+        }
+        
+        res.status(200).json(complaint);
+    } catch (error) {
+        console.error('Error fetching complaint details:', error);
+        res.status(500).json({ success: false, message: 'Server error' });
+    }
+};
+
+// Resolve a complaint
+exports.resolveComplaint = async (req, res) => {
+    try {
+        const { resolutionDetails, resolutionCategory } = req.body;
+        
+        if (!resolutionDetails || !resolutionCategory) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Resolution details and category are required' 
+            });
+        }
+        
+        const complaint = await Complaint.findById(req.params.id);
+        
+        if (!complaint) {
+            return res.status(404).json({ success: false, message: 'Complaint not found' });
+        }
+        
+        // Update the complaint
+        complaint.status = 'Resolved';
+        complaint.resolutionDetails = resolutionDetails;
+        complaint.resolutionCategory = resolutionCategory;
+        complaint.resolvedAt = Date.now();
+        
+        await complaint.save();
+        
+        res.status(200).json({ 
+            success: true, 
+            message: 'Complaint resolved successfully',
+            complaint 
+        });
+    } catch (error) {
+        console.error('Error resolving complaint:', error);
+        res.status(500).json({ success: false, message: 'Server error' });
+    }
+};
