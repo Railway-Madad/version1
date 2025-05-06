@@ -14,7 +14,7 @@ exports.postAdminLogin = async (req, res) => {
         if (domain === 'admin') {
             const admin = await Admin.findOne({ username });
             if (admin && await admin.comparePassword(password)) {
-                const complaints = await Complaint.find();
+                const complaints = await Complaint.find().sort({ createdAt: -1 });;
                 const users = await User.find();
 
                 const totalComplaints = complaints.length;
