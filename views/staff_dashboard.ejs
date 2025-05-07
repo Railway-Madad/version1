@@ -527,6 +527,7 @@
                          <p><strong>Created At:</strong> <span id="viewCreatedAt"></span></p>
                          <p><strong>Description:</strong></p>
                          <p id="viewDescription" class="border p-2 bg-light rounded"></p>
+                         <p><strong>image_url:</strong> <span id="viewimgurl"></span></p>
                      </div>
                      <div class="modal-footer">
                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -589,6 +590,7 @@
                          document.getElementById('viewIssueType').textContent = complaint.issueDomain;
                          document.getElementById('viewCreatedAt').textContent = new Date(complaint.createdAt).toLocaleString();
                          document.getElementById('viewDescription').textContent = complaint.description;
+                         document.getElementById('viewimgurl').textContent = complaint.linkurl;
                          
                          // Hide resolve button if already resolved
                          const resolveBtn = document.getElementById('resolveBtn');
