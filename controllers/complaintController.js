@@ -109,14 +109,33 @@ exports.getPaginatedComplaints = async (req, res) => {
 //get all 
 // GET /complaints/all - Get all complaints
 exports.getAllComplaints = async (req, res) => {
+
+
+
     try {
+
+
         const complaints = await Complaint.find().sort({ createdAt: -1 });
+
+
         console.log('Fetched all complaints:', complaints.length); // Debug log
+
+
         res.json({ complaints });
+
+
     } catch (error) {
+
+
         console.error('Error fetching all complaints:', error);
+
+
         res.status(500).json({ complaints: [], error: error.message });
+
+
     }
+
+
 };
 
 // GET /complaint/:id - Get complaint by ID

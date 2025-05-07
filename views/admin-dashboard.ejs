@@ -647,9 +647,9 @@ button[type="submit"]:hover {
   <div class="dashboard">
     <!-- Admin Action Buttons -->
     <div class="admin-actions">
-      <button class="admin-btn" onclick="openNewsModal()">
+      <!-- <button class="admin-btn" onclick="openNewsModal()">
         <i class="fas fa-newspaper"></i> Publish News
-      </button>
+      </button> -->
       <button class="admin-btn" onclick="openStaffModal()">
         <i class="fas fa-user-plus"></i> Register New Staff
       </button>
@@ -699,14 +699,6 @@ button[type="submit"]:hover {
         </div>
       </div>
     </div>
-
-    <div class="dashboard-card">
-      <h2 class="card-title">Complaint Status Distribution</h2>
-      <div class="chart-container">
-        <canvas id="complaintStatusChart"></canvas>
-      </div>
-    </div>
-
     <div class="dashboard-card">
       <h2 class="card-title">Recent Complaints (5 Most Recent)</h2>
       <table class="complaints-table">
@@ -906,46 +898,127 @@ function showSuccessPopup() {
 
   // Real-time update logic for pie chart and integer fields
   function updateComplaints() {
-    fetch('/complaints/all')
-      .then(async response => {
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(`Failed to fetch complaints: ${response.status} - ${errorText}`);
-        }
-        return response.json();
-      })
-      .then(data => {
-        console.log('Fetched complaints:', data); // Debug log
-        const complaints = data.complaints || [];
 
-        // Update statistics
-        const totalComplaints = complaints.length;
-        const pendingComplaints = complaints.filter(c => c.status === 'pending').length;
-        const resolvedComplaints = complaints.filter(c => c.status === 'resolved').length;
 
-        document.getElementById('total-complaints').textContent = totalComplaints;
-        document.getElementById('pending-complaints').textContent = pendingComplaints;
-        document.getElementById('resolved-complaints').textContent = resolvedComplaints;
 
-        // Update pie chart
-        complaintChart.data.datasets[0].data = [pendingComplaints, resolvedComplaints];
-        complaintChart.update();
-      })
-      .catch(error => {
-        console.error('Error updating complaints:', error);
-      });
-  }
+fetch('/complaints/all')
 
-  // Initial fetch
-  updateComplaints();
 
-  // Set interval for real-time updates every 2000ms
-  const updateInterval = setInterval(updateComplaints, 2000);
+  .then(async response => {
 
-  // Clean up interval on page unload
-  window.addEventListener('unload', () => {
-    clearInterval(updateInterval);
+
+    if (!response.ok) {
+
+
+      const errorText = await response.text();
+
+
+      throw new Error(`Failed to fetch complaints: ${response.status} - ${errorText}`);
+
+
+    }
+
+
+    return response.json();
+
+
+  })
+
+
+  .then(data => {
+
+
+    console.log('Fetched complaints:', data); // Debug log
+
+
+    const complaints = data.complaints || [];
+
+
+
+
+
+    // Update statistics
+
+
+    const totalComplaints = complaints.length;
+
+
+    const pendingComplaints = complaints.filter(c => c.status === 'pending').length;
+
+
+    const resolvedComplaints = complaints.filter(c => c.status === 'resolved').length;
+
+
+
+
+
+    document.getElementById('total-complaints').textContent = totalComplaints;
+
+
+    document.getElementById('pending-complaints').textContent = pendingComplaints;
+
+
+    document.getElementById('resolved-complaints').textContent = resolvedComplaints;
+
+
+
+
+
+    // Update pie chart
+
+
+    complaintChart.data.datasets[0].data = [pendingComplaints, resolvedComplaints];
+
+
+    complaintChart.update();
+
+
+  })
+
+
+  .catch(error => {
+
+
+    console.error('Error updating complaints:', error);
+
+
   });
+
+
+}
+
+
+
+
+
+// Initial fetch
+
+
+updateComplaints();
+
+
+
+
+
+// Set interval for real-time updates every 2000ms
+
+
+const updateInterval = setInterval(updateComplaints, 2000);
+
+
+
+
+
+// Clean up interval on page unload
+
+
+window.addEventListener('unload', () => {
+
+
+clearInterval(updateInterval);
+
+
+});
 
   // Chart configuration
   const ctx = document.getElementById('complaintStatusChart').getContext('2d');
