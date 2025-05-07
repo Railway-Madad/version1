@@ -349,6 +349,70 @@
     .admin-btn i {
       font-size: 1.2rem;
     }
+
+     /* Styling for the Add News form */
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.form-group textarea,
+.form-group input[type="file"] {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  font-size: 1rem;
+}
+
+.form-group textarea {
+  resize: vertical;
+}
+
+button[type="submit"] {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+button[type="submit"]:hover {
+  background-color: #0d62d2;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(13, 98, 210, 0.2);
+}
+
+/* Popup Success Message */
+#successPopup {
+  display: none;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #28a745;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 1rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 2000;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+#successPopup.show {
+  display: block;
+  opacity: 1;
+}
+
     
     /* Modal Styles */
     .modal {
@@ -592,7 +656,30 @@
     </div>
 
     <div class="dashboard-card">
-      <h2 class="card-title">Overview Statistics</h2>
+
+      <h2 class="card-title">Statistics</h2>
+
+      <div class="dashboard-card">
+        <h2 class="card-title">Complaint Status Distribution</h2>
+        <canvas id="complaintStatusChart"></canvas>
+      </div>
+
+      <div class="dashboard-card">
+        <h2 class="card-title">Add News</h2>
+        <form action="/news/upload" method="POST" enctype="multipart/form-data">
+          <div class="form-group">
+            <label for="description">News Description</label>
+            <textarea id="description" name="description" rows="4" placeholder="Enter description..." required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="image">Image</label>
+            <input type="file" id="image" name="image" accept="image/*" required />
+          </div>
+          <button type="submit" class="btn">Submit News</button>
+        </form>
+      </div>
+      
+
       <div class="stats-grid">
         <div class="stat-card">
           <div class="number" id="total-complaints"><%= totalComplaints %></div>
@@ -779,9 +866,44 @@
       </form>
     </div>
   </div>
+  <!-- Success Popup -->
+<div id="successPopup">News uploaded successfully!</div>
+
 
 </body>
 <script>
+
+  //news 
+  document.querySelector('form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+
+    fetch('/news/upload', {
+      method: 'POST',
+      body: formData,
+    })
+    .then(response => response.json())
+    .then(data => {
+      alert(data.message);
+      // Optionally reload or update the page with the new data
+    })
+    .catch(error => {
+      console.error('Error uploading news:', error);
+    });
+  });
+  // Show the success popup
+function showSuccessPopup() {
+  const popup = document.getElementById('successPopup');
+  popup.classList.add('show');
+  
+  // Hide the popup after 3 seconds
+  setTimeout(() => {
+    popup.classList.remove('show');
+  }, 3000);
+}
+
+
   // Real-time update logic for pie chart and integer fields
   function updateComplaints() {
     fetch('/complaints/all')
