@@ -9,13 +9,46 @@
   <style>
     :root {
       --primary-color: #1a73e8;
+      --primary-dark: #0d5bbc;
+      --primary-light: #e8f0fe;
       --secondary-color: #f57c00;
-      --card-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+      --secondary-dark: #e55a00;
+      --secondary-light: #fff3e0;
+      --success-color: #27ae60;
+      --success-light: #d4edda;
+      --warning-color: #f39c12;
+      --warning-light: #fff3cd;
+      --danger-color: #e74c3c;
+      --danger-light: #f8d7da;
+      --neutral-color: #6c757d;
+      --neutral-light: #d6d8db;
+      --text-dark: #333333;
+      --text-medium: #555555;
+      --text-light: #777777;
+      --background-color: #f8f9fa;
+      --white: #ffffff;
+      --card-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+      --hover-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
       --transition: 0.3s ease-in-out;
+      --font-primary: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      --border-radius: 8px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: var(--font-primary);
+    }
+
+    body {
+      background-color: var(--background-color);
+      color: var(--text-dark);
+      line-height: 1.6;
     }
 
     .navbar {
-      background-color: #fff;
+      background-color: var(--white);
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
       padding: 15px 0;
       position: sticky;
@@ -55,43 +88,76 @@
       gap: 15px;
     }
 
-    .nav-right .btn {
+    .btn {
       padding: 10px 20px;
       background-color: var(--secondary-color);
-      color: white;
+      color: var(--white);
       border: none;
-      border-radius: 5px;
+      border-radius: var(--border-radius);
       text-decoration: none;
       font-weight: 600;
       transition: var(--transition);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn i {
+      font-size: 1rem;
     }
 
     .btn:hover {
-      background-color: #e55a00;
+      background-color: var(--secondary-dark);
       transform: translateY(-2px);
       box-shadow: 0 6px 12px rgba(229, 90, 0, 0.2);
     }
 
-    .welcome-banner {
+    .btn-primary {
       background-color: var(--primary-color);
-      color: white;
-      padding: 20px 0;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+      box-shadow: 0 6px 12px rgba(26, 115, 232, 0.2);
+    }
+
+    .welcome-banner {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+      color: var(--white);
+      padding: 30px 0;
       text-align: center;
       margin-bottom: 30px;
     }
 
+    .welcome-banner h1 {
+      font-size: 2rem;
+      font-weight: 600;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
     .dashboard {
-      max-width: 900px;
+      max-width: 1100px;
       margin: 0 auto 40px;
       padding: 0 20px;
     }
 
     .dashboard-card {
-      background-color: white;
-      border-radius: 10px;
+      background-color: var(--white);
+      border-radius: var(--border-radius);
       box-shadow: var(--card-shadow);
       padding: 30px;
       margin-bottom: 30px;
+      transition: var(--transition);
+    }
+
+    .dashboard-card:hover {
+      box-shadow: var(--hover-shadow);
     }
 
     .card-title {
@@ -99,16 +165,17 @@
       font-size: 1.5rem;
       margin-bottom: 20px;
       position: relative;
-      padding-bottom: 10px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid var(--primary-light);
     }
 
     .card-title::after {
       content: '';
       position: absolute;
-      bottom: 0;
+      bottom: -2px;
       left: 0;
-      width: 60px;
-      height: 3px;
+      width: 80px;
+      height: 2px;
       background-color: var(--secondary-color);
     }
 
@@ -119,85 +186,131 @@
     }
 
     .stat-card {
-      background-color: #f8f8f8;
-      border-radius: 8px;
-      padding: 15px;
+      background-color: var(--white);
+      border-radius: var(--border-radius);
+      padding: 20px;
       text-align: center;
       transition: var(--transition);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      border-top: 4px solid var(--primary-color);
     }
 
     .stat-card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+      box-shadow: var(--hover-shadow);
     }
 
     .stat-card .number {
-      font-size: 2rem;
+      font-size: 2.2rem;
       font-weight: 700;
       color: var(--primary-color);
+      margin-bottom: 8px;
+    }
+
+    .stat-card .label {
+      color: var(--text-medium);
+      font-weight: 500;
+    }
+
+    .stat-card.pending {
+      border-top-color: var(--danger-color);
     }
 
     .stat-card.pending .number {
-      color: #e74c3c;
+      color: var(--danger-color);
+    }
+
+    .stat-card.resolved {
+      border-top-color: var(--success-color);
     }
 
     .stat-card.resolved .number {
-      color: #27ae60;
+      color: var(--success-color);
     }
 
     .complaints-table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      border-radius: var(--border-radius);
+      overflow: hidden;
     }
 
     .complaints-table th,
     .complaints-table td {
       padding: 12px 15px;
-      border: 1px solid #eee;
       text-align: left;
     }
 
     .complaints-table th {
       background-color: var(--primary-color);
-      color: white;
+      color: var(--white);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      letter-spacing: 0.5px;
+    }
+
+    .complaints-table tr:nth-child(even) {
+      background-color: var(--primary-light);
+    }
+
+    .complaints-table tr:hover {
+      background-color: rgba(26, 115, 232, 0.05);
+    }
+
+    .complaints-table td {
+      border-bottom: 1px solid #eee;
     }
 
     .status-badge {
-      padding: 4px 8px;
-      border-radius: 4px;
+      padding: 6px 12px;
+      border-radius: 20px;
       font-size: 0.8rem;
-      font-weight: 500;
+      font-weight: 600;
+      display: inline-block;
+      text-align: center;
     }
 
     .status-pending {
-      background-color: #fff3cd;
-      color: #856404;
+      background-color: var(--warning-light);
+      color: var(--warning-color);
     }
 
     .status-resolved {
-      background-color: #d4edda;
-      color: #155724;
+      background-color: var(--success-light);
+      color: var(--success-color);
     }
 
     .status-closed {
-      background-color: #d6d8db;
-      color: #383d41;
+      background-color: var(--neutral-light);
+      color: var(--neutral-color);
     }
 
     footer {
-      padding: 20px 0;
-      background-color: #f8f8f8;
+      padding: 25px 0;
+      background-color: var(--white);
       text-align: center;
-      color: #666;
+      color: var(--text-light);
       font-size: 0.9rem;
+      border-top: 1px solid #eee;
+      margin-top: 40px;
     }
 
     #complaintStatusChart {
-      max-width: 250px;
-      max-height: 250px;
-      width: 100%; /* Ensure it is responsive */
-      height: auto; /* Keep the aspect ratio intact */
+      max-width: 300px;
+      max-height: 300px;
+      margin: 0 auto;
+      width: 100%;
+      height: auto;
+    }
+
+    .chart-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 20px 0;
     }
 
     .admin-actions {
@@ -209,10 +322,10 @@
 
     .admin-btn {
       padding: 15px 25px;
-      background-color: var(--primary-color);
-      color: white;
-      border: none;
-      border-radius: 5px;
+      background-color: var(--white);
+      color: var(--primary-color);
+      border: 2px solid var(--primary-color);
+      border-radius: var(--border-radius);
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
@@ -223,12 +336,14 @@
       gap: 10px;
       transition: var(--transition);
       box-shadow: var(--card-shadow);
+      min-width: 220px;
     }
 
     .admin-btn:hover {
-      background-color: #0d5bbc;
+      background-color: var(--primary-color);
+      color: var(--white);
       transform: translateY(-2px);
-      box-shadow: 0 6px 12px rgba(26, 115, 232, 0.2);
+      box-shadow: var(--hover-shadow);
     }
 
     .admin-btn i {
@@ -249,11 +364,11 @@
     }
 
     .modal-content {
-      background-color: #fff;
+      background-color: var(--white);
       margin: 5% auto;
       padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      border-radius: var(--border-radius);
+      box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
       width: 90%;
       max-width: 600px;
       position: relative;
@@ -263,7 +378,7 @@
     @keyframes modalAppear {
       from {
         opacity: 0;
-        transform: translateY(-50px);
+        transform: translateY(-30px);
       }
       to {
         opacity: 1;
@@ -277,43 +392,72 @@
       right: 15px;
       font-size: 24px;
       cursor: pointer;
-      color: #777;
+      color: var(--text-light);
       transition: var(--transition);
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
     }
 
     .close-modal:hover {
-      color: #333;
+      color: var(--text-dark);
+      background-color: rgba(0, 0, 0, 0.05);
     }
 
-
     .modal-header {
-      margin-bottom: 20px;
-      padding-bottom: 10px;
-      border-bottom: 2px solid var(--secondary-color);
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid var(--primary-light);
+      position: relative;
+    }
+
+    .modal-header::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 80px; 
+      height: 2px;
+      background-color: var(--secondary-color);
     }
 
     .modal-header h2 {
       color: var(--primary-color);
       margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     .modal-form label {
       display: block;
       margin-bottom: 8px;
       font-weight: 600;
-      color: #444;
+      color: var(--text-medium);
     }
 
     .modal-form input,
     .modal-form textarea,
     .modal-form select {
       width: 100%;
-      padding: 12px;
+      padding: 12px 15px;
       margin-bottom: 20px;
       border: 1px solid #ddd;
-      border-radius: 5px;
+      border-radius: var(--border-radius);
       font-family: inherit;
       font-size: 16px;
+      transition: var(--transition);
+    }
+
+    .modal-form input:focus,
+    .modal-form textarea:focus,
+    .modal-form select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.15);
     }
 
     .modal-form textarea {
@@ -322,18 +466,61 @@
     }
 
     .modal-form button {
-      background-color: var(--secondary-color);
+      background-color: var(--primary-color);
       color: white;
-      padding: 12px 20px;
+      padding: 12px 24px;
       border: none;
-      border-radius: 5px;
+      border-radius: var(--border-radius);
       cursor: pointer;
       font-weight: 600;
       transition: var(--transition);
+      display: block;
+      margin: 10px 0 0 auto;
     }
 
     .modal-form button:hover {
-      background-color: #e55a00;
+      background-color: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(26, 115, 232, 0.2);
+    }
+
+    .feedback-section {
+      margin-top: 30px;
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+      margin: 20px 0;
+    }
+
+    .pagination a {
+      padding: 8px 15px;
+      background-color: var(--primary-color);
+      color: var(--white);
+      text-decoration: none;
+      border-radius: var(--border-radius);
+      transition: var(--transition);
+    }
+
+    .pagination a:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    .pagination span {
+      color: var(--text-medium);
+      font-weight: 500;
+    }
+
+    .feedback-item {
+      background-color: var(--white);
+      border-radius: var(--border-radius);
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: var(--card-shadow);
     }
 
     @media (max-width: 768px) {
@@ -360,6 +547,15 @@
       .dashboard-card {
         padding: 20px;
       }
+      
+      .welcome-banner h1 {
+        font-size: 1.6rem;
+      }
+      
+      .modal-content {
+        padding: 20px;
+        margin: 10% auto;
+      }
     }
   </style>
 </head>
@@ -385,7 +581,7 @@
   </div>
 
   <div class="dashboard">
-    <!-- New Admin Action Buttons -->
+    <!-- Admin Action Buttons -->
     <div class="admin-actions">
       <button class="admin-btn" onclick="openNewsModal()">
         <i class="fas fa-newspaper"></i> Publish News
@@ -396,13 +592,7 @@
     </div>
 
     <div class="dashboard-card">
-      <h2 class="card-title">Statistics</h2>
-
-      <div class="dashboard-card">
-        <h2 class="card-title">Complaint Status Distribution</h2>
-        <canvas id="complaintStatusChart"></canvas>
-      </div>
-      
+      <h2 class="card-title">Overview Statistics</h2>
       <div class="stats-grid">
         <div class="stat-card">
           <div class="number" id="total-complaints"><%= totalComplaints %></div>
@@ -424,7 +614,14 @@
     </div>
 
     <div class="dashboard-card">
-      <h2 class="card-title">Recent Complaints</h2>
+      <h2 class="card-title">Complaint Status Distribution</h2>
+      <div class="chart-container">
+        <canvas id="complaintStatusChart"></canvas>
+      </div>
+    </div>
+
+    <div class="dashboard-card">
+      <h2 class="card-title">Recent Complaints (5 Most Recent)</h2>
       <table class="complaints-table">
         <thead>
           <tr>
@@ -458,8 +655,57 @@
         </tbody>
       </table>
     </div>
-  </div>
 
+    <div class="dashboard-card">
+      <h2 class="card-title">Feedback Statistics</h2>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="number"><%= totalFeedbacks %></div>
+          <div class="label">Total Feedbacks</div>
+        </div>
+        <div class="stat-card resolved">
+          <div class="number"><%= averageRating %> / 5</div>
+          <div class="label">Average Rating</div>
+        </div>
+      </div>
+    
+      <% if (Object.keys(feedbackByCategory).length > 0) { %>
+        <h3 style="margin-top: 25px; margin-bottom: 15px; color: var(--primary-color);">Feedback by Category</h3>
+        <table class="complaints-table">
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Count</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% Object.entries(feedbackByCategory).forEach(([cat, count]) => { %>
+              <tr>
+                <td><%= cat %></td>
+                <td><%= count %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      <% } %>
+    </div>
+
+    <div class="dashboard-card feedback-section">
+        <h2 class="card-title">Latest Feedback (10 Most Recent)</h2>
+        <% feedbacks.slice(0, 10).forEach(feedback => { %>
+          <div class="feedback-item">
+            <p><strong>Name:</strong> <%= feedback.fullname %></p>
+            <p><strong>Rating:</strong> <%= feedback.rating %> / 5</p>
+            <p><strong>Feedback:</strong> <%= feedback.feedback %></p>
+          </div>
+        <% }) %>
+        
+        <% if (feedbacks.length === 0) { %>
+          <div class="feedback-item">
+            <p>No feedback available at this time.</p>
+          </div>
+        <% } %>
+      </div>
   <footer>
     <div class="container">
       <p>© <%= new Date().getFullYear() %> Rail Madad - Indian Railways. All Rights Reserved.</p>
@@ -469,7 +715,6 @@
   <!-- Publish News Modal -->
   <div id="newsModal" class="modal">
     <div class="modal-content">
-
       <span class="close-modal" onclick="closeNewsModal()">×</span>
 
       <div class="modal-header">
@@ -505,7 +750,6 @@
   <!-- Register Staff Modal -->
   <div id="staffModal" class="modal">
     <div class="modal-content">
-
       <span class="close-modal" onclick="closeStaffModal()">×</span>
 
       <div class="modal-header">
@@ -533,7 +777,6 @@
         </div>
         <button type="submit">Register Staff</button>
       </form>
-      
     </div>
   </div>
 
@@ -582,7 +825,7 @@
     clearInterval(updateInterval);
   });
 
-  // Original script (unchanged)
+  // Chart configuration
   const ctx = document.getElementById('complaintStatusChart').getContext('2d');
 
   const complaintChart = new Chart(ctx, {
@@ -592,20 +835,34 @@
       datasets: [{
         label: 'Complaint Status',
         data: [<%= pendingComplaints %>, <%= resolvedComplaints %>],
-        backgroundColor: ['#ffc107', '#28a745'],
+        backgroundColor: ['#f39c12', '#27ae60'],
         borderColor: ['#fff', '#fff'],
-        borderWidth: 1
+        borderWidth: 2
       }]
     },
     options: {
       responsive: true,
       plugins: {
         legend: {
-          position: 'bottom'
+          position: 'bottom',
+          labels: {
+            font: {
+              size: 14
+            },
+            padding: 20
+          }
         },
         title: {
           display: true,
-          text: 'Complaints by Status'
+          text: 'Complaints by Status',
+          font: {
+            size: 16,
+            weight: 'bold'
+          },
+          padding: {
+            top: 10,
+            bottom: 20
+          }
         }
       }
     }
@@ -643,10 +900,6 @@
       closeStaffModal();
     }
   }
-
-  // Form submission handling
-  
-
 </script>
 
 </html>

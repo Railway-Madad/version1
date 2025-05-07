@@ -2,6 +2,8 @@ const Admin = require('../models/AdminModel');
 const Staff = require('../models/StaffModel');
 const Complaint = require('../models/ComplaintModel');
 const User = require('../models/UserModel');
+const Feedback = require('../models/Feedback');
+
 
 exports.getAdminLogin = (req, res) => {
     res.render('admin-login', { loginError: null });
@@ -26,13 +28,45 @@ exports.postAdminLogin = async (req, res) => {
                 admin.lastLogin = new Date();
                 await admin.save();
 
+                let feedbacks = await Feedback.find().sort({ submittedAt: -1 });
+
+                let totalFeedbacks = feedbacks.length;
+
+                const averageRating = totalFeedbacks > 0
+                  ? (feedbacks.reduce((sum, fb) => sum + (fb.rating || 0), 0) / totalFeedbacks).toFixed(1)
+                  : 'N/A';
+
+                const feedbackByCategory = {};
+                feedbacks.forEach(fb => {
+                  feedbackByCategory[fb.category] = (feedbackByCategory[fb.category] || 0) + 1;
+                });
+
+                const page = parseInt(req.query.page) || 1;
+                const limit = parseInt(req.query.limit) || 10;
+                const skip = (page - 1) * limit;
+
+                feedbacks = await Feedback.find()
+                    .sort({ rating: 1 }) // Sort by rating (ascending)
+                    .skip(skip)
+                    .limit(limit);
+
+                totalFeedbacks = await Feedback.countDocuments();
+
+
                 return res.render('admin-dashboard', {
                     totalComplaints,
                     pendingComplaints,
                     resolvedComplaints,
                     totalUsers,
                     complaints: complaints.slice(0, 5),
-                    adminDetails: admin
+                    adminDetails: admin,
+                    feedbacks,
+                    totalFeedbacks,
+                    averageRating,
+                    feedbackByCategory,
+                    currentPage: page,
+                    totalPages: Math.ceil(totalFeedbacks / limit),
+                    limit // Add this line to pass the limit to the template
                 });
             }
 
@@ -80,19 +114,47 @@ exports.registerStaff = async (req, res) => {
       const pendingComplaints = complaints.filter(c => c.status === 'Pending').length;
       const resolvedComplaints = complaints.filter(c => c.status === 'Resolved').length;
       const totalUsers = users.length;
+
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+      const skip = (page - 1) * limit;
+
+      let feedbacks = await Feedback.find()
+                    .sort({ submittedAt: -1 })
+                    .skip(skip)
+                    .limit(limit);
+
+      const totalFeedbacks = await Feedback.countDocuments();
+
+      const averageRating = totalFeedbacks > 0
+        ? (feedbacks.reduce((sum, fb) => sum + (fb.rating || 0), 0) / totalFeedbacks).toFixed(1)
+        : 'N/A';
+
+      const feedbackByCategory = {};
+      feedbacks.forEach(fb => {
+        feedbackByCategory[fb.category] = (feedbackByCategory[fb.category] || 0) + 1;
+      });
+
   
-      res.render('admin-dashboard', {
+      return res.render('admin-dashboard', {
         totalComplaints,
         pendingComplaints,
         resolvedComplaints,
         totalUsers,
         complaints: complaints.slice(0, 5),
-        adminDetails: admin
+        adminDetails: admin,
+        feedbacks,
+        totalFeedbacks,
+        averageRating,
+        feedbackByCategory,
+        currentPage: page,
+        totalPages: Math.ceil(totalFeedbacks / limit),
+        limit // Add this line to pass the limit to the template
       });
+    
   
     } catch (err) {
       console.error(err);
       res.status(500).send('Internal server error.');
     }
   };
-  
