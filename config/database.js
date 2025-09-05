@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 
 
-const dbURI = 'mongodb+srv://ydmalve:G5jZ5XDKo3aKjIph@cluster0.8bita43.mongodb.net/RailMadad?retryWrites=true&w=majority'; 
+const dbURI = 'mongodb+srv://ydmalve:yashdmalve5284@cluster0.ay0odnv.mongodb.net/'; 
 
 const options = {
   useNewUrlParser: true,
